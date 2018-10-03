@@ -1,14 +1,44 @@
 {% extends 'base_v3.html' %}
 
+{% block title %}
+Login Warungid
+{% endblock %}
+
 {% block content %}
 <div class="ui text container">
     <div class="ui stackable middle aligned centered grid" style="height:500px">
-        <div class="eight wide column">
-            <div class="ui segment">
+        <div class="nine wide column">
+            <div class="ui top attached segment">
+                <div class="ui header">
+                    Login
+                </div>
+            </div>
+            <div class="ui bottom attached segment">
                 <form action="" class="ui large form" method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="ui primary fluid large button">Login</button>
+                    <div class="field">
+                        <label for="{{ form.username.id_for_label }}">Email Address</label>
+                        <div class="ui left icon input">
+                            {{ form.username }}
+                            <i class="user icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <div class="ui left icon input">
+                            {{ form.password }}
+                            <i class="key icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button type="submit" class="ui primary fluid large button">Login</button>
+                    </div>
+                    <div class="field">
+                        <p>
+                            <small>Don't have account? <a href="{% url 'signup' %}" class="ui link">Register</a></small>
+                            <small> or <a href="#">Forgot Password</a></small>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>

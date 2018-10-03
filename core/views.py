@@ -3,10 +3,10 @@ from django.template.loader import render_to_string
 from django.http.response import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 
 from .forms import SignUpForm, LimitUserForm
-from .decorators import user_is_agen_or_staff, user_is_referal_agen
+from .decorators import user_is_agen_or_staff, user_is_referal_agen, user_is_staff_only
 
 User_class = get_user_model()
 
@@ -48,6 +48,28 @@ def userListView(request):
 
     data['html'] = render_to_string(
         'core/includes/partial-user-list.html',
+        content,
+        request=request
+    )
+    return JsonResponse(data)
+
+
+@login_required
+@user_is_staff_only
+def userAgenListView(request):
+    data = dict()
+    user_objs = User_class.objects.filter(
+        is_agen=True
+    ).annotate(
+        c_member = Count('user')
+    )
+
+    content = {
+        'agens': user_objs
+    }
+
+    data['html'] = render_to_string(
+        'core/includes/partial-agen-list.html',
         content,
         request=request
     )

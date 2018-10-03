@@ -1,32 +1,51 @@
 {% load humanize %}
 
-{% for member in members %}
-    <tr>
-        <td>
-            <strong title="{{ member }}">{{ member.full_name|title }}</strong>
+<table class="ui small fixed table">
+    <thead>
+        <tr>
+            <th>Username</th>
             {% if user.is_superuser %}
-                <br>
-                <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
+                <th>Type</th>
             {% endif %}
-        </td>
-        {% if user.is_superuser %}
-            <td>{% if member.is_agen %}Agen{% endif %}</td>
-        {% endif %}
-        <td>{{ member.user_c }}</td>
-        <td>{{ member.saldo|intcomma }}</td>
-        <td>{{ member.limit|intcomma }}</td>
-        <td>
-            <i class="user icon {% if member.is_active %} green {% endif %}"></i>
-            <i class="telegram icon {% if member.telegram %} blue {% endif %}"></i>
-        </td>
-        <td>{{ member.date_joined|date:"M d, Y"}}</td>
-        <td>
-            <!-- <a title="Edit" href="#"><i class="edit icon"></i></a> -->
-            <a class="js-btn-limit" target-url="{% url 'core:user-limit' member.id %}" href="#">
-                <i class="pencil icon"></i>
-                Limit
-            </a>
-            <!-- <a class="js-user-detail" href="#" target-url="{% url 'core:user-detail' member.id %}"> <i class="eye icon"></i> View</a> -->
-        </td>
-    </tr>
-{% endfor %}
+            <th>Trx Count</th>
+            <th>Saldo</th>
+            <th>Limit</th>
+            <th>Media</th>
+            <th>Join Date</th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    {% for member in members %}
+        <tr>
+            <td>
+                <strong title="{{ member }}">{{ member.full_name|title }}</strong>
+                {% if user.is_superuser %}
+                    <br>
+                    <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
+                {% endif %}
+            </td>
+            {% if user.is_superuser %}
+                <td>{% if member.is_agen %}Agen{% endif %}</td>
+            {% endif %}
+            <td>{{ member.user_c }}</td>
+            <td>{{ member.saldo|intcomma }}</td>
+            <td>{{ member.limit|intcomma }}</td>
+            <td>
+                <i class="user icon {% if member.is_active %} green {% endif %}"></i>
+                <i class="telegram icon {% if member.telegram %} blue {% endif %}"></i>
+            </td>
+            <td>{{ member.date_joined|date:"M d, Y"}}</td>
+            <td>
+                <!-- <a title="Edit" href="#"><i class="edit icon"></i></a> -->
+                <a class="js-btn-limit" target-url="{% url 'core:user-limit' member.id %}" href="#">
+                    <i class="pencil icon"></i>
+                    Limit
+                </a>
+                <!-- <a class="js-user-detail" href="#" target-url="{% url 'core:user-detail' member.id %}"> <i class="eye icon"></i> View</a> -->
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

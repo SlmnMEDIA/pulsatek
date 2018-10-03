@@ -98,7 +98,6 @@ def chart_pulsa(request):
 # DATA SALE VIEW
 # OK
 @login_required(login_url='/login/')
-@user_is_agen_or_staff
 def saleListView(request):
     data = dict()
     sale_objs = Sale.objects.filter(
@@ -109,6 +108,8 @@ def saleListView(request):
     if not request.user.is_superuser:
         if request.user.is_agen:
             sale_objs = sale_objs.filter(user__leader=request.user)
+        else :
+            sale_objs = sale_objs.filter(user=request.user)
 
 
     page = request.GET.get('page',1)
@@ -145,7 +146,6 @@ def saleListView(request):
 # DATA SALE PROFIT
 # OK
 @login_required(login_url='/login/')
-@user_is_agen_or_staff
 def saleProfitView(request):
     data = dict()
     sale_obj = Sale.outcome.all()

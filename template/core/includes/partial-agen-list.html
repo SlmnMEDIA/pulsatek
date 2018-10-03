@@ -1,0 +1,26 @@
+{% load humanize %}
+
+<table class="ui small table">
+    <thead>
+        <tr>
+            <th>Agen Id</th>
+            <th>Full Name</th>
+            <th>Count Member</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for agen in agens %}
+        <tr>
+            <td>{{ agen }}</td>
+            <td>{{ agen.full_name }}</td>
+            <td>{{ agen.c_member }}</td>
+            <td></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No data found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

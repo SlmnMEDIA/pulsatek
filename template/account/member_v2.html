@@ -21,25 +21,21 @@ Member
         <div class="row">
             <div class="column">
                 <h4>Member / Anggota</h4>
-                <table id="users-tbl" class="ui small fixed table" url-target="{% url 'core:member' %}">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            {% if user.is_superuser %}
-                                <th>Type</th>
-                            {% endif %}
-                            <th>Trx Count</th>
-                            <th>Saldo</th>
-                            <th>Limit</th>
-                            <th>Media</th>
-                            <th>Join Date</th>
-                            <th>#</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data -->
-                    </tbody>
-                </table>
+
+                <div id="tabmember" class="ui top attached tabular menu">
+                    <a href="#" class="item active" data-tab="allmember">
+                        All Members
+                    </a>
+                    <a href="#" class="item" data-tab="agen">
+                        Agen Executive
+                    </a>
+                </div>
+                <div id="users-tbl" target-url="{% url 'core:member' %}" class="ui bottom attached tab active segment" data-tab="allmember">
+                    <!-- data -->
+                </div>
+                <div target-url="{% url 'core:agen_list' %}" class="ui bottom attached tab segment" data-tab="agen">
+                    <!-- data -->
+                </div>
             </div>
         </div>
     </div>
@@ -48,6 +44,37 @@ Member
 {% block js %}
 <script>
     $(document).ready(function() {
+        $('#tabmember.menu .item')
+        .tab({
+            cache: false,
+            // faking API request
+            apiSettings: {
+            loadingDuration : 300,
+            mockResponse    : function(settings) {
+                var response = {
+                allmember  : loadTab,
+                agen : loadTab,
+                };
+                return response[settings.urlData.tab];
+            }
+            },
+            context : 'parent',
+            auto    : true,
+            path    : '/'
+        });
+
+        var loadTab = function() {
+            var tb = $(this);
+            $.ajax({
+                url: tb.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    tb.html(data.html);
+                }
+            });
+            return false;
+        }
+
         var loadmodalView = function() {
             var btn = $(this);
             $.ajax({
@@ -81,10 +108,10 @@ Member
 
         var t = $('#users-tbl')
         $.ajax({
-            url: t.attr('url-target'),
+            url: t.attr('target-url'),
             dataType: 'json',
             success: function(data) {
-                $('#users-tbl tbody').html(data.html);
+                $('#users-tbl').html(data.html);
             }
         });
 
