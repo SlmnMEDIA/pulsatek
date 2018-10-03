@@ -1,0 +1,35 @@
+{% for op in operators %}
+    <div class="ui header">
+        {{ op }}
+    </div>
+    <table class="ui small fixed shortable celled table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Type</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in op.get_pulsa %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ product.get_product_type_display }}</td>
+                    <td>{{ product.product_code}}</td>
+                    <td>{{ product.product_title }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.is_active }}</td>
+                    <td>
+                        <a title="Edit product" href="#">
+                            <i class="edit icon"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}

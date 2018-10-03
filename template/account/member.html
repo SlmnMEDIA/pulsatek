@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui basic segment">
+    <div class="ui stackable equal width grid">
+        <div class="row">
+            <div class="column">
+                <form action="{% url 'core:member' %}" class="ui small form js-search-form">
+                    <div class="four wide field">
+                        <div class="ui action input">
+                            <input type="text" name="search" placeholder="Search">
+                            <button type="submit" class="ui icon button">
+                                <i class="search icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <table id="users-tbl" class="ui small table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User Identitas</th>
+                            <th>Saldo</th>
+                            <th>Active</th>
+                            <th>Join Date</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <div class="tbody">
+                        {% for member in members %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ member.email }} <br>{{ member.full_name }} {{ member.pin }}</td>
+                            <td>{{ member.saldo }}</td>
+                            <td>{{ member.is_active }}</td>
+                            <td>{{ member.date_joined|date:"M d, Y"}}</td>
+                            <td><a class="js-user-detail" href="#" target-url="{% url 'core:user-detail' member.id %}"> <i class="eye icon"></i> View</a></td>
+                        </tr>
+                        {% endfor %}
+                    </div>
+                </table>
+            </div>
+            <div class="column">
+                <div id="user-view" class="ui segment">
+                    Detail member information.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var searchObj = function() {
+            var form = $('.js-search-form');
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    $('#users-tbl tbody').html(data.html);
+                }
+            });
+            return false;
+        }
+
+        $('.js-search-form').on('submit', searchObj);
+
+        $('#users-tbl').on('click', '.js-user-detail', function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    $('#user-view').html(data.html);
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+{% endblock %}

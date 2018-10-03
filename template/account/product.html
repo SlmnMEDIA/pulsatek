@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="ui basic segment">
+    <div class="ui stackable grid">
+        <div class="row">
+            <div class="column">
+                <div class="ui header">
+                    Pulsa Data All Operator
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <div class="ui top attached right aligned segment">
+                    <a href="#" target-url="{% url 'pulsa:create' %}" class="ui small basic button js-create-pulsa">
+                        <i class="add icon"></i> Add Product
+                    </a>
+                </div>
+                <table id="product" class="ui celled small bottom attached table" data-ng-url="{% url 'pulsa:product_list' %}">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Type</th>
+                            <th>Code</th>
+                            <th>Info Product</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var tab = $('#product');
+        $.ajax({
+            url: tab.attr('data-ng-url'),
+            dataType: 'json',
+            success: function(data) {
+                $('table#product tbody').html(data.html);
+            }
+        });
+
+        var loadmodal = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    // load modal
+                    $('.ui.modal').modal({
+                        blurring: true,
+                    }).modal('show');
+                },
+                success: function(data) {
+                    // load modal content
+                    $('.ui.modal').html(data.html);
+                }
+            });
+            return false;
+        }
+
+        var post_product = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function(data) {
+                    if(data.form_is_valid) {
+                        $('.ui.modal').modal('hide');
+                        $('#product tbody').html(data.data_list);
+                    }
+                }
+            });
+            return false;
+        }
+
+        $('.js-create-pulsa').click(loadmodal);
+        $('.ui.modal').on('submit', '.js-product-form', post_product);
+
+    });
+</script>
+{% endblock %}
+

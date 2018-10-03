@@ -1,0 +1,100 @@
+{% extends 'base_v2.html' %}
+{% load humanize %}
+
+{% block title %}
+Member
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable grid">
+        <div class="row">
+            <div class="column">
+                <div id="tabmenu" class="ui teal menu">
+                    <a href="#" target-url="{% url 'sale:add_cash' %}" class="item">
+                        <i class="add icon"></i>
+                        Add Saldo
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <h4>Member / Anggota</h4>
+                <table id="users-tbl" class="ui small fixed table" url-target="{% url 'core:member' %}">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            {% if user.is_superuser %}
+                                <th>Type</th>
+                            {% endif %}
+                            <th>Trx Count</th>
+                            <th>Saldo</th>
+                            <th>Limit</th>
+                            <th>Media</th>
+                            <th>Join Date</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var loadmodalView = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#modal1').modal({inverted:true}).modal('show');
+                },success: function(data) {
+                    $('#modal1').html(data.html);
+                }
+            });
+            return false;
+        }
+        
+        var postForm = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function(data) {
+                    if(data.form_is_valid) {
+                        $('#modal1').modal('hide');
+                        $('#users-tbl tbody').html(data.html_data);
+                    }
+                }
+            });
+            return false;
+        }
+
+        var t = $('#users-tbl')
+        $.ajax({
+            url: t.attr('url-target'),
+            dataType: 'json',
+            success: function(data) {
+                $('#users-tbl tbody').html(data.html);
+            }
+        });
+
+
+
+        $('#users-tbl').on('click', '.js-btn-limit', loadmodalView);
+        $('#modal1').on('submit', '.js-limit-form', postForm);
+
+        $('#tabmenu').on('click', '.item', loadmodalView);
+        $('#modal1').on('submit', '.js-add-cash', postForm);
+    });
+</script>
+{% endblock %}

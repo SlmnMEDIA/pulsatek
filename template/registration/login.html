@@ -1,0 +1,17 @@
+{% extends 'base_v3.html' %}
+
+{% block content %}
+<div class="ui text container">
+    <div class="ui stackable middle aligned centered grid" style="height:500px">
+        <div class="eight wide column">
+            <div class="ui segment">
+                <form action="" class="ui large form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="ui primary fluid large button">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

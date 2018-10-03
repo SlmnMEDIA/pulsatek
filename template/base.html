@@ -1,0 +1,74 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <!-- Css -->
+        <link rel="stylesheet" href="{% static 'semantic/semantic.min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/main.css' %}">
+
+        {% block css %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="visible example">
+            <div class="ui bottom attached segment pushable" style="border-color: transparent">
+                <div class="ui left inverted visible sidebar vertical thin menu" style="background-color: #4FB1BA">
+                    <div class="item active">Home</div>
+                    <a href="{% url 'account:index' %}" class="item">
+                        Dashboad
+                    </a>
+                    <a href="{% url 'account:sale' %}" class="item">
+                        Sales
+                    </a>
+                    <div class="item">
+                        <div class="header">
+                            Product
+                        </div>
+                        <div class="menu">
+                            <a href="{% url 'account:product' %}" class="item disable">
+                                Data & Pulsa
+                            </a>
+                            <a class="item" href="#">
+                                E-Transport
+                            </a>
+                            <a href="#" class="item">
+                                Game Online
+                            </a>
+                            <a class="item" href="#">
+                                Token Listrik
+                            </a>
+                        </div>
+                    </div>
+                    <a href="{% url 'account:member' %}" class="item">
+                        Member
+                    </a>
+                </div>
+                <div class="pusher" style="width: calc(100% - 150px);">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="ui modal">
+            <!-- modal content -->
+        </div>
+       
+        
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="{% static 'semantic/semantic.min.js' %}"></script>
+        <script src="{% static 'main/main.js' %}"></script>
+        {% block js %}
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<form action="{% url 'sale:payment_list' %}" class="ui form js-search">
+    <div class="five wide field">
+        <div class="ui input action">
+            <input type="text" placeholder="Search" name="search">
+            <button type="submit" class="ui button">Search</button>
+        </div>
+    </div>
+</form>
+
+<table class="ui small table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Nominal</th>
+            <th>Validate By</th>
+            <th>Type Payment</th>
+            <th>Confirm Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pay in payments %}
+        <tr>
+            <td>{{ pay.user }}</td>
+            <td>{{ pay.nominal }}</td>
+            <td>{{ pay.cash.validateby|default:'-'}}</td>
+            <td>{% if pay.cash %}Cash{% else %}Trasnfer{% endif %}</td>
+            <td>{{ pay.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No data found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

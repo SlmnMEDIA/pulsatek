@@ -1,0 +1,49 @@
+<div class="content">
+    <form action="{% url 'pulsa:create' %}" method="post" class="ui form js-product-form">
+        {% csrf_token %}
+        <div class="fields">
+            <div class="three wide field">
+                <label for="{{ form.product_code.id_for_label }}">Code</label>
+                {{ form.product_code }}
+            </div>
+            <div class="thirteen wide field">
+                <label for="{{ form.title.id_for_label }}">Product Name</label>
+                {{ form.title }}
+            </div>
+        </div>
+        <div class="fields">
+            <div class="three wide field">
+                <label for="{{ form.operator.id_for_label }}">Operator</label>
+                {{ form.operator }}
+            </div>
+            <div class="three wide field">
+                <label for="{{ form.product_type.id_for_label }}">Pulsa / Data</label>
+                {{ form.product_type }}
+            </div>
+            <div class="five wide field">
+                <label for="{{ form.server.id_for_label }}">Server</label>
+                {{ form.server }}
+            </div>
+        </div>
+        <div class="fields">
+            <div class="field">
+                <label for="{{ form.nominal.id_for_label }}">Nominal</label>
+                {{ form.nominal }}
+            </div>
+            <div class="field">
+                <label for="{{ form.price.id_for_label }}">Price</label>
+                {{ form.price }}
+            </div>
+        </div>
+        <div class="field">
+            <button type="submit" class="ui primary button">Add Product</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- fields = [
+            'operator', 'product_type', 'product_code',
+            'server', 'title',
+            'nominal', 'price',
+        ] -->

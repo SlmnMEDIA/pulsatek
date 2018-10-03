@@ -1,0 +1,46 @@
+<form action="{% url 'sale:cash_list' %}" class="ui form js-search">
+    <div class="five wide field">
+        <div class="ui input action">
+            <input type="text" placeholder="Search" name="search">
+            <button type="submit" class="ui button">Search</button>
+        </div>
+    </div>
+</form>
+
+<table class="ui small table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Leader</th>
+            <th>Nominal</th>
+            <th>Post Date</th>
+            <th>Status</th>
+            <th>Validated By</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cash in cashs %}
+        <tr>
+            <td>{{ cash.user }}</td>
+            <td>{{ cash.agen }}</td>
+            <td>{{ cash.nominal }}</td>
+            <td>{{ cash.timestamp }}</td>
+            <td>{% if cash.validated %}Validated{% else %}Waiting Validate{% endif %}</td>
+            <td>{{ cash.validateby|default:'-' }}</td>
+            <td>
+                <i class="paperclip icon"></i>
+                {% if not cash.validated %}
+                    <a class="js-validate-btn" href="#" target-url="{% url 'sale:cash_validation' cash.id %}">
+                        <i class="crosshairs icon"></i>
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No data found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,27 @@
+<div class="ui centered stackable grid">
+    <div class="row">
+        <div class="eight wide column">
+            <h2 class="ui center aligned header">
+                Game Online
+            </h2>
+            <form action="{% url 'game:topup' %}" method="post" class="ui large form">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="{{ form.phone.id_for_label }}">ID Game / No. HP</label>
+                    <div class="input">
+                        {{ form.phone }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="{{ form.product.id_for_label }}">Pilih Game</label>
+                    <div class="input">
+                        {{ form.product }}
+                    </div>
+                </div>
+                <div class="field right aligned">
+                    <button type="submit" class="ui large orange button">Beli Sekarang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

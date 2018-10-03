@@ -1,0 +1,53 @@
+{% extends 'base_v2.html' %}
+
+{% block title %}
+    Chart
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="ui equal width stackable grid">
+    <div class="row">
+        <div class="column">
+            <div id="sale-chart-day" data-ng-url="{% url 'sale:sale_chart' %}" class="ui segment">
+                <!-- chart -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="five wide column">
+            <div id="product-pulsa" data-ng-url="{% url 'sale:pulsa_chart' %}" class="ui segment">
+                <!-- chart -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script>
+    $(document).ready(function() {
+        // chart loaded
+        var item = $('#sale-chart-day');
+        $.ajax({
+            url: item.attr('data-ng-url'),
+            dataType: 'json',
+            success: function(data) {
+                Highcharts.stockChart("sale-chart-day", data);
+            }
+        });
+
+
+        var item = $('#product-pulsa');
+        $.ajax({
+            url: item.attr('data-ng-url'),
+            dataType: 'json',
+            success: function(data) {
+                Highcharts.chart("product-pulsa", data);
+            }
+        });
+    });
+</script>
+{% endblock %}

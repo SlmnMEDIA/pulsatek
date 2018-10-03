@@ -1,0 +1,31 @@
+{% load humanize %}
+
+<i class="close icon"></i>
+<div class="header">
+    Update Limit Member
+</div>
+<div class="content">
+    <p>
+        Dear <strong>{{ user }}</strong> <br>
+        Saat ini Anda ingin merubah limit transaksi member <strong>{{member.full_name|title }}</strong>. Batas limit dapat berubah tergantung jumlah deposit yang Agen setorkan.
+    </p>
+    {% if form.has_errors %}
+        {% for error in form.errors %}
+        {{ error }}
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'core:user-limit' member.id %}" class="ui large form js-limit-form">
+        {% csrf_token %}
+        <div class="five wide field">
+            <label for="{{ form.limit.id_for_label }}">Nominal Limit</label>
+            <div class="ui input">
+                {{ form.limit }}
+            </div>
+            <small>Max. Rp {{ user.limit_max|intcomma }}</small>
+        </div>
+        <div class="field">
+            <button type="submit" class="ui large primary button">Update</button>
+        </div>
+    </form>
+</div>
+

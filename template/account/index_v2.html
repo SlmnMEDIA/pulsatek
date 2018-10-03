@@ -1,0 +1,94 @@
+{% extends 'base_v2.html' %}
+
+{% block title %}
+Dashboard
+{{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+<div class="ui stackable grid">
+    <div class="row">
+        <div class="column">
+           <div class="ui top attached tabular teal menu">
+                <a href="#" class="item active" data-tab='pulsadata'>
+                    Pulsa & Data
+                </a>
+                <a href="#" class="item" data-tab='game'>
+                    Game Online
+                </a>
+                <a href="#" class="item" data-tab='etrans'>
+                    E-Transport
+                </a>
+                <a href="#" class="item" data-tab='listrik'>
+                    Token Listrik
+                </a>
+           </div>
+           <div class="ui bottom attached tab segment active" data-tab='pulsadata' target-url="{% url 'pulsa:topup' %}">
+                <!-- data -->
+           </div>
+            <div class="ui bottom attached tab segment" data-tab='game' target-url="{% url 'game:topup' %}">
+                <!-- data -->
+            </div>
+            <div class="ui bottom attached tab segment" data-tab='etrans' target-url="{% url 'transport:topup' %}">
+                <!-- data -->
+            </div>
+            <div class="ui bottom attached tab segment" data-tab='listrik' target-url="{% url 'listrik:topup' %}">
+                <!-- data -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('.menu .item')
+        .tab({
+            cache: false,
+            // faking API request
+            apiSettings: {
+            loadingDuration : 300,
+            mockResponse    : function(settings) {
+                var response = {
+                pulsadata  : getProd,
+                game  : getProd,
+                etrans: getProd,
+                listrik: getProd,
+                };
+                return response[settings.urlData.tab];
+            }
+            },
+            context : 'parent',
+            auto    : true,
+            path    : '/'
+        });
+
+        var getProd = function() {
+            var t = $(this);
+            $.ajax({
+                url: t.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    t.html(data.html);
+                }
+            });
+            return false;
+        }
+
+        var t = $('.active.segment');
+        $.ajax({
+            url: t.attr('target-url'),
+            dataType: 'json',
+            success: function(data) {
+                t.html(data.html);
+            }
+        });
+
+
+
+    });
+</script>
+{% endblock %}
+

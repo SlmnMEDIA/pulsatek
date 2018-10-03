@@ -1,0 +1,9 @@
+{% load templatehelpers %}
+
+{% if sales.has_other_pages %}
+    <div class="ui pagination menu">
+        {% for i in sales.paginator.page_range %}
+        <a target-url="{{ request.path }}{% relative_url i 'page' request.GET.urlencode %}" href="#" class="item js-page-btn">{{i}}</a>
+        {% endfor %}
+    </div>
+{% endif %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="ui basic segment">
+    <div class="ui stackable grid">
+        <div class="row">
+            <div class="column">
+                <form action="{% url 'sale:sale_list' %}" class="ui small form js-search-sale">
+                    <div class="five wide field">
+                        <div class="ui action input">
+                            <input type="text" name="search" placeholder="Search">
+                            <button type="submit" class="ui icon button">
+                                <i class="search icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <table id="sale-tbl" class="ui small celled table" data-ng-url="{% url 'sale:sale_list' %}">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Transaction ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- content -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var item = $('#sale-tbl');
+        $.ajax({
+            url: item.attr('data-ng-url'),
+            dataType: 'json',
+            success: function(data) {
+                $('#sale-tbl tbody').html(data.html);
+            }
+        });
+
+        var searchPost = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    $('#sale-tbl tbody').html(data.html);
+                }
+            });
+            return false;
+        }
+
+        $('.js-search-sale').on('submit', searchPost);
+    });
+</script>
+{% endblock %}

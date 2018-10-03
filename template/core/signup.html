@@ -1,0 +1,17 @@
+{% extends 'base_v3.html' %}
+
+{% block content %}
+<div class="ui container">
+    <div class="ui stackable grid">
+        <div class="seven wide column">
+            <div class="ui segment">
+                <form action="" class="ui form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="ui button">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

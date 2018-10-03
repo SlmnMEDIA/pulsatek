@@ -1,0 +1,50 @@
+{% for op in operators %}
+    <div class="ui header">
+        {{ op }}
+    </div>
+    <table class="ui small fixed shortable celled table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Type</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in op.get_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ product.get_product_type_display }}</td>
+                    <td>{{ product.product_code}}</td>
+                    <td>{{ product.product_title }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.is_active }}</td>
+                    <td>
+                        <a title="Edit product" href="#">
+                            <i class="edit icon"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+<!-- operator = models.ForeignKey(Operator, on_delete=models.CASCADE)
+    product_type = models.PositiveSmallIntegerField(choices=TYPE_PROD, default=1)
+    product_code = models.CharField(max_length=12, unique=True)
+    product_name = models.CharField(max_length=200, blank=True)
+    nominal = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
+    server = models.OneToOneField(Server, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200,)
+    description = models.TextField(max_length=500, blank=True)
+    additional_info = models.TextField(max_length=500, blank=True)
+    is_active = models.BooleanField(default=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, default=1)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    update = models.Da -->
