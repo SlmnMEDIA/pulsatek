@@ -10,6 +10,33 @@ Member
     <div class="ui stackable grid">
         <div class="row">
             <div class="column">
+                <div class="ui segment">
+                    <div class="ui header">
+                        Invitation Member
+                    </div>
+                    <form action="" class="ui form" method="post">
+                        {% csrf_token %}
+                        <div class="eight wide field">
+                            <label for="{{ invite_form.email.id_for_label }}">Invite Now</label>
+                            <div class="ui action input">
+                                {{ invite_form.email }}
+                                <button type="submit" class="ui button">Invite Member</button>
+                            </div>
+                            {% if invite_form.email.errors %}
+                                {% for error in invite_form.email.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                {% endfor %}
+                            {%  endif %}
+                        </div>
+                    </form>
+                   <div class="ui info message">
+                       Kirim undangan untuk bergabung bersama <a href="http://warungid.com">www.warungid.com</a>.
+                   </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
                 <div id="tabmenu" class="ui teal menu">
                     <a href="#" target-url="{% url 'sale:add_cash' %}" class="item">
                         <i class="add icon"></i>

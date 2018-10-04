@@ -2,6 +2,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django import forms
 
+from .models import Invitation
+
 
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -27,3 +29,22 @@ class LimitUserForm(forms.ModelForm):
             if limit > self.user_obj.limit_max():
                 raise forms.ValidationError('Error melebihi batas limit.')
         return limit
+
+
+class InvitationForm(forms.ModelForm):
+    class Meta:
+        model = Invitation
+        fields = ['email']
+
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if email is None or email == '':
+            raise forms.ValidationError('Email cannot be empty.')
+
+        user_class = get_user_model()
+        user_exists = user_class.objects.filter(email=email).exists()
+        if user_exists:
+            raise forms.ValidationError('Email has been register. Cannot invite registered email.')
+
+        return email

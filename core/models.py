@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count
 
 from .managers import UserManager
-from .utils import generate_pin_code
+from .utils import generate_pin_code, generate_invitation_code
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -66,3 +66,21 @@ class StatusTransaction(models.Model):
 
     def __str__(self):
         return self.code
+
+
+class Invitation(models.Model):
+    agen = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=200, unique=True)
+    code = models.CharField(max_length=20, blank=True)
+    closed = models.BooleanField(default=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.code
+
+
+    def save(self, *args, **kwargs):
+        if self.code is None or self.code == '':
+            self.code = generate_invitation_code(self)
+        
+        super(Invitation, self).save(*args, **kwargs)

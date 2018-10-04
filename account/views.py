@@ -5,6 +5,8 @@ from django.db.models import Sum, Count, Q
 
 from core.decorators import user_is_agen_or_staff, user_is_staff_only
 
+from core.forms import InvitationForm
+
 
 # INDEX / DASHBOARD VIEW
 @login_required(login_url='/login/')
@@ -34,7 +36,17 @@ def productView(request):
 @login_required(login_url='/login/')
 @user_is_agen_or_staff
 def memberView(request):
-    return render(request, 'account/member_v2.html')
+    invite_form = InvitationForm(request.POST or None)
+    if request.method == 'POST':
+        if invite_form.is_valid():
+            instance = invite_form.save(commit=False)
+            instance.agen = request.user
+            instance.save()
+            
+    content = {
+        'invite_form': invite_form
+    }
+    return render(request, 'account/member_v2.html', content)
 
 
 # PAYMENT VIEW
