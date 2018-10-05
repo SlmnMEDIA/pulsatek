@@ -22,6 +22,11 @@ Login Warungid
                             {{ form.username }}
                             <i class="user icon"></i>
                         </div>
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                            <small style="color:brown">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label for="{{ form.password.id_for_label }}">Password</label>
@@ -29,14 +34,28 @@ Login Warungid
                             {{ form.password }}
                             <i class="key icon"></i>
                         </div>
+                        {% if form.password.errors %}
+                            {% for error in form.password.errors %}
+                            <small style="color:brown">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
                     </div>
+                    {% if form.non_field_errors %}
+                        <div class="ui red message">
+                            <div class="ui small list">
+                                {% for error in form.non_field_errors %}
+                                    <div class="item">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="field">
                         <button type="submit" class="ui primary fluid large button">Login</button>
                     </div>
                     <div class="field">
                         <p>
                             <small>Don't have account? <a href="{% url 'signup' %}" class="ui link">Register</a></small>
-                            <small> or <a href="#">Forgot Password</a></small>
+                            <small> or <a href="{% url 'password_reset' %}">Forgot Password</a></small>
                         </p>
                     </div>
                 </form>

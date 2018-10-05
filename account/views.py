@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count, Q
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from core.decorators import user_is_agen_or_staff, user_is_staff_only
 
@@ -42,6 +45,15 @@ def memberView(request):
             instance = invite_form.save(commit=False)
             instance.agen = request.user
             instance.save()
+            messages.success(request, 'Invitaion email has been send to {}.'.format(instance.email))
+            subject = 'Warungid Invitation Member'
+            body = render_to_string(
+                'email/email-invitation-body.html',
+                {'invit_obj': instance}
+            )
+            sender = 'support@warungid.com'
+            receiver = [instance.email]
+            send_mail(subject, body, sender, receiver)
             
     content = {
         'invite_form': invite_form

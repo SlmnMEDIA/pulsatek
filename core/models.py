@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def limit_max(self):
         free_deposit = self.deposit + 1000000
         c_member = User.objects.filter(leader=self).count()
-        return free_deposit/c_member
+        return int(free_deposit/c_member)
 
     def get_avatar(self):
         if self.avatar:
@@ -72,7 +72,7 @@ class Invitation(models.Model):
     agen = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=200, unique=True)
     code = models.CharField(max_length=20, blank=True)
-    closed = models.BooleanField(default=True)
+    closed = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

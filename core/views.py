@@ -5,21 +5,36 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Sum
 
-from .forms import SignUpForm, LimitUserForm
+from .forms import SignUpForm, LimitUserForm, InvitationForm
 from .decorators import user_is_agen_or_staff, user_is_referal_agen, user_is_staff_only
+from core.models import Invitation
 
 User_class = get_user_model()
 
 # SIGNUP VIEW
 def signupViews(request):
-    form = SignUpForm(request.POST or None)
+    ref = request.GET.get('r', None)
+    try :
+        invit_obj = Invitation.objects.get(code=ref, closed=False)
+        form = SignUpForm(ref ,request.POST or None, initial={'email': invit_obj.email})
+    except:
+        form = SignUpForm(request.POST or None)
+
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
+            try :
+                instance = form.save(commit=False)
+                instance.leader = invit_obj.agen
+                instance.save()
+                invit_obj.closed = True
+                invit_obj.save()
+            except:
+                form.save()
+
             return redirect('account:index')
 
     content = {
-        'form': form
+        'form': form,
     }
     return render(request, 'core/signup.html', content)
 

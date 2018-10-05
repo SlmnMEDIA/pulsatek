@@ -8,15 +8,23 @@ Register
 <div class="ui container">
     <div class="ui stackable centered middle aligned grid" style="min-height:600px">
         <div class="six wide column">
-            <div class="ui segment">
+            <h2 class="ui top attached centered header">
+                Register
+            </h2>
+            <div class="ui bottom attached segment">
                 <form action="" class="ui large form" method="post">
                     {% csrf_token %}
                     <div class="field">
                         <label for="{{ form.email.id_for_label }}">Email Address</label>
-                        <div class="ui left icon input">
+                        <div class="ui left icon {% if form.mail %}disabled{% endif %} input">
                             {{ form.email }}
                             <i class="user icon"></i>
                         </div>
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                            <small style="color:brown">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="fields">
                         <div class="eight wide field">
@@ -45,6 +53,11 @@ Register
                             {{ form.password2 }}
                             <i class="key icon"></i>
                         </div>
+                        {% if form.password2.errors %}
+                            {% for error in form.password2.errors %}
+                            <small style="color:brown">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="field">
                         <button type="submit" class="ui large fluid button">Register</button>

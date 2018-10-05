@@ -161,3 +161,11 @@ LOGOUT_REDIRECT_URL = '/login/'
 RAJA_UID = config('RAJA_UID')
 RAJA_KEY = config('RAJA_KEY')
 RAJA_URLS = []
+
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'postmaster@mg.warungid.com'
+EMAIL_HOST_PASSWORD = 'e3bad123'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'Warungid Team <no-reply@warungid.com>'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

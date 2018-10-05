@@ -9,5 +9,6 @@ from rest_framework.authtoken.models import Token
 def generate_token(sender, instance, created, **kwargs):
     if created:
         Token.objects.create(user=instance)
-        instance.leader = instance
-        instance.save()
+        if instance.leader is None:
+            instance.leader = instance
+            instance.save()

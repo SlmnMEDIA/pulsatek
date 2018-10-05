@@ -1,0 +1,15 @@
+{% autoescape off %}
+Hai WarungIder,
+
+WarungId dengan bangga mengundang Anda untuk bergabung bersama kami,
+rasakan kemudahan dalam bertransaksi serasa warung milik sendiri.
+
+http://warungid.com{% url 'signup' %}?r={{ invit_obj.code }}
+
+Ref Code : {{ invit_obj.code }}
+Dikirim oleh : {{ invit_obj.agen.full_name }}
+
+Salam,
+Warungid - Serasa Warung Milik Kamu Sendiri
+
+{% endautoescape %}

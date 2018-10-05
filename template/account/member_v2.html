@@ -17,7 +17,7 @@ Member
                     <form action="" class="ui form" method="post">
                         {% csrf_token %}
                         <div class="eight wide field">
-                            <label for="{{ invite_form.email.id_for_label }}">Invite Now</label>
+                            <label for="{{ invite_form.email.id_for_label }}">Email Address</label>
                             <div class="ui action input">
                                 {{ invite_form.email }}
                                 <button type="submit" class="ui button">Invite Member</button>
@@ -29,9 +29,15 @@ Member
                             {%  endif %}
                         </div>
                     </form>
-                   <div class="ui info message">
-                       Kirim undangan untuk bergabung bersama <a href="http://warungid.com">www.warungid.com</a>.
-                   </div>
+                   {% if messages %}
+                        <div class="ui success message">
+                            <i class="close icon"></i>
+                            <div class="header">Sending Success</div>
+                            {% for msg in messages %}
+                                <p>{{ msg }}</p>
+                            {% endfor %}
+                        </div>
+                   {% endif %}
                 </div>
             </div>
         </div>
@@ -126,7 +132,7 @@ Member
                 success: function(data) {
                     if(data.form_is_valid) {
                         $('#modal1').modal('hide');
-                        $('#users-tbl tbody').html(data.html_data);
+                        $('#users-tbl').html(data.html_data);
                     }
                 }
             });

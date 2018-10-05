@@ -12,6 +12,24 @@ class SignUpForm(UserCreationForm):
             'email', 'first_name', 'last_name',
         ]
 
+    def __init__(self, ref=None, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        try :
+            invit_obj = Invitation.objects.get(code=ref, closed=False)
+            self.mail = invit_obj.email
+        except:
+            self.mail = None
+
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if self.mail:
+            if self.mail != email:
+                raise forms.ValidationError('Invalid email invitations.')
+
+        return email
+
+
 class LimitUserForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
