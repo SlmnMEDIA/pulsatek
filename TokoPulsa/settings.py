@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'import_export',
 
     'core',
     'pulsa',
@@ -86,12 +87,24 @@ WSGI_APPLICATION = 'TokoPulsa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config('DBNAME'),
+            'USER': config('DBUSER'),
+            'PASSWORD': config('DBPASS'),
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
 
 
 # Password validation
@@ -154,6 +167,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
 
 LOGIN_REDIRECT_URL = 'account:index'
 LOGOUT_REDIRECT_URL = '/login/'
@@ -165,7 +180,7 @@ RAJA_URLS = []
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'postmaster@mg.warungid.com'
-EMAIL_HOST_PASSWORD = 'e3bad123'
+EMAIL_HOST_PASSWORD = config('EMAILPASS')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Warungid Team <no-reply@warungid.com>'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

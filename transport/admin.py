@@ -1,4 +1,6 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+from .resources import ProductResource, OperatorResource, ServerResource
 
 # Register your models here.
 from .models import (
@@ -8,10 +10,20 @@ from .models import (
 
 from .forms import ProductForm, ServerForm, OperatorForm
 
+
+def activateProduct(modeladmin, request, queryset):
+    queryset.update(is_active=True)
+
+def inactiveProduct(modeladmin, request, queryset):
+    queryset.update(is_active=False)
+
+activateProduct.short_description = 'Activate selected Product'
+inactiveProduct.short_description = 'Inactivate selected Product'
+
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
     list_display = [
-        'operator', 'product_name', 'nominal', 'price', 'is_active'
+        'product_code' ,'operator', 'product_name', 'nominal', 'server', 'price', 'is_active'
     ]
     list_display_links = [
         'operator', 'product_name'
@@ -23,15 +35,19 @@ class ProductAdmin(admin.ModelAdmin):
         'product_code', 'product_name'
     ]
     form = ProductForm
+    resource_class = ProductResource
+    actions = [activateProduct, inactiveProduct]
 
 
 @admin.register(Operator)
-class OperatorAdmin(admin.ModelAdmin):
+class OperatorAdmin(ImportExportModelAdmin):
     form = OperatorForm
+    resource_class = OperatorResource
 
 @admin.register(Server)
-class ServerAdmin(admin.ModelAdmin):
+class ServerAdmin(ImportExportModelAdmin):
     form = ServerForm
+    resource_class = ServerResource
 
 
 @admin.register(Transaction)

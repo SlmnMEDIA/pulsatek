@@ -109,6 +109,8 @@ class Product(models.Model):
             return self.product_name
         return "PULSA {} {:0,.0f}".format(self.operator.operator.title(), self.nominal)
 
+    # def get_server(self):
+    #     return ''.format(self.server.code, 
 
 class Transaction(models.Model):
     trx_code = models.CharField(max_length=100, blank=True)
