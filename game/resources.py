@@ -26,6 +26,7 @@ class OperatorResource(resources.ModelResource):
         fields = [
             'operator', 'parse'
         ]
+        import_id_fields = ['operator']
         skip_unchanged = True
         report_skipped = False
         export_order = ['operator']
@@ -37,6 +38,7 @@ class ServerResource(resources.ModelResource):
         fields = [
             'code', 'product_name', 'price'
         ]
+        import_id_fields = ['code']
         export_order = ['code', 'product_name', 'price']
         skip_unchanged = True
         report_skipped = False
