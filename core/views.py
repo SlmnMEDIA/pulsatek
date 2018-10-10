@@ -4,10 +4,14 @@ from django.http.response import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Sum
+from django.conf import settings
+from django.contrib import messages
 
-from .forms import SignUpForm, LimitUserForm, InvitationForm
+import requests
+
+from .forms import SignUpForm, LimitUserForm, InvitationForm, MessagePostForm
 from .decorators import user_is_agen_or_staff, user_is_referal_agen, user_is_staff_only
-from core.models import Invitation
+from .models import Invitation, MessagePost
 
 User_class = get_user_model()
 
@@ -18,20 +22,32 @@ def signupViews(request):
         invit_obj = Invitation.objects.get(code=ref, closed=False)
         form = SignUpForm(ref ,request.POST or None, initial={'email': invit_obj.email})
     except:
-        form = SignUpForm(request.POST or None)
+        form = SignUpForm(ref ,request.POST or None)
+
 
     if request.method == 'POST':
         if form.is_valid():
-            try :
-                instance = form.save(commit=False)
-                instance.leader = invit_obj.agen
-                instance.save()
-                invit_obj.closed = True
-                invit_obj.save()
-            except:
-                form.save()
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            data = {
+                'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                'response': recaptcha_response
+            }
+            r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+            result = r.json()
 
-            return redirect('account:index')
+            if result['success']:
+                try :
+                    instance = form.save(commit=False)
+                    instance.leader = invit_obj.agen
+                    instance.save()
+                    invit_obj.closed = True
+                    invit_obj.save()
+                except:
+                    form.save()
+
+                return redirect('account:index')
+            else :
+                messages.error(request, 'Invalid reCAPTCHA. Please try again.')
 
     content = {
         'form': form,
@@ -145,6 +161,69 @@ def limitUserModifyView(request, id):
     
     data['html'] = render_to_string(
         'core/includes/partial-limit-form.html',
+        content,
+        request=request
+    )
+    return JsonResponse(data)
+
+
+# MESSAGE LIST
+@login_required(login_url='/login/')
+@user_is_staff_only
+def messageListView(request):
+    data = dict()
+    msgPost_objs = MessagePost.objects.filter(closed=False)
+    if not request.user.is_superuser:
+        if request.user.is_agen:
+            msgPost_objs = msgPost_objs.filter(
+                created_by=request.user
+            )
+    content = {
+        'messagelist': msgPost_objs
+    }
+
+    data['html'] = render_to_string(
+        'core/includes/partial-message-list.html',
+        content,
+        request=request
+    )
+    return JsonResponse(data)
+
+
+# POST MESSAGE
+@login_required(login_url='/login/')
+@user_is_staff_only
+def messagePostView(request):
+    data = dict()
+    form = MessagePostForm(request.user, request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_by = request.user
+            instance.save()
+            form.save()
+            
+            msgPost_objs = MessagePost.objects.filter(closed=False)
+            if not request.user.is_superuser:
+                if request.user.is_agen:
+                    msgPost_objs = msgPost_objs.filter(
+                        created_by=request.user
+                    )
+            data['html_data'] = render_to_string(
+                'core/includes/partial-message-list.html',
+                {'messagelist': msgPost_objs},
+                request=request
+            )
+            data['form_is_valid'] = True
+            
+        else :
+            data['form_is_valid'] = False
+    
+    content = {
+        'form': form
+    }
+    data['html'] = render_to_string(
+        'core/includes/partial-message-post.html',
         content,
         request=request
     )

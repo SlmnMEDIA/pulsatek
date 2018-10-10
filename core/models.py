@@ -54,6 +54,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return '/media/'+self.avatar
         return '/media/avatars/default.jpg'
 
+    @property
+    def get_telegram(self):
+        return self.telegram.telegram
+
 
 class Telegram(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -84,3 +88,28 @@ class Invitation(models.Model):
             self.code = generate_invitation_code(self)
         
         super(Invitation, self).save(*args, **kwargs)
+
+
+class SiteMaster(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    status = models.BooleanField(default=False)
+    keterangan = models.CharField(max_length=200)
+
+
+    def __str__(self):
+        return self.code
+
+
+class MessagePost(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    send_to = models.ManyToManyField(User, related_name='receiver')
+    subject = models.CharField(max_length=100)
+    message = models.TextField(max_length=500)
+    schedule = models.DateTimeField()
+    closed = models.BooleanField(default=False)
+    sent_message_now = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject

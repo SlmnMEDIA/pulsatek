@@ -43,25 +43,36 @@ Member
         </div>
         <div class="row">
             <div class="column">
-                <div id="tabmenu" class="ui teal menu">
-                    <a href="#" target-url="{% url 'sale:add_cash' %}" class="item">
+                <div id="tabmenu" class="ui labeled icon menu">
+                    <a href="#" target-url="{% url 'sale:add_cash' %}" class="teal item active">
                         <i class="add icon"></i>
                         Add Saldo
                     </a>
+                    {% if user.is_superuser %}
+                        <a href="#" target-url="{% url 'core:message_post' %}" class="orange item">
+                            <i class="envelope icon"></i>
+                            Create Message
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="column">
-                <h4>Member / Anggota</h4>
+                <h4>Management Account</h4>
 
-                <div id="tabmember" class="ui top attached tabular menu">
+                <div id="tabmember" class="ui tabular top attached menu">
                     <a href="#" class="item active" data-tab="allmember">
                         All Members
                     </a>
                     <a href="#" class="item" data-tab="agen">
                         Agen Executive
                     </a>
+                    {% if user.is_superuser %}
+                    <a href="#" class="item" data-tab="message">
+                        Message
+                    </a>
+                    {% endif %}
                 </div>
                 <div id="users-tbl" target-url="{% url 'core:member' %}" class="ui bottom attached tab active segment" data-tab="allmember">
                     <!-- data -->
@@ -69,6 +80,11 @@ Member
                 <div target-url="{% url 'core:agen_list' %}" class="ui bottom attached tab segment" data-tab="agen">
                     <!-- data -->
                 </div>
+                {% if user.is_superuser %}
+                <div id="tabmsg" target-url="{% url 'core:message_list' %}" class="ui bottom attached tab segment" data-tab="message">
+                    <!-- data -->
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -87,6 +103,7 @@ Member
                 var response = {
                 allmember  : loadTab,
                 agen : loadTab,
+                message : loadTab,
                 };
                 return response[settings.urlData.tab];
             }
@@ -139,22 +156,45 @@ Member
             return false;
         }
 
-        var t = $('#users-tbl')
-        $.ajax({
-            url: t.attr('target-url'),
-            dataType: 'json',
-            success: function(data) {
-                $('#users-tbl').html(data.html);
-            }
-        });
+        var postMessage = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    if(data.form_is_valid) {
+                        $('#modal1').modal('hide');
+                        $('#tabmsg').html(data.html_data);
+                    }
+                }
+            })
+            return false;
+        }
 
+        function initdata() {
+            var t = $('#users-tbl')
+            $.ajax({
+                url: t.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    $('#users-tbl').html(data.html);
+                }
+            });
 
+            return false;
+        }
+
+        initdata();
 
         $('#users-tbl').on('click', '.js-btn-limit', loadmodalView);
         $('#modal1').on('submit', '.js-limit-form', postForm);
 
         $('#tabmenu').on('click', '.item', loadmodalView);
         $('#modal1').on('submit', '.js-add-cash', postForm);
+
+        $('#modal1').on('submit', '.js-message-form', postMessage);
     });
 </script>
 {% endblock %}

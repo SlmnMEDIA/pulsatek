@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'import_export',
+    'widget_tweaks',
 
     'core',
     'pulsa',
@@ -184,3 +185,5 @@ EMAIL_HOST_PASSWORD = config('EMAILPASS')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Warungid Team <no-reply@warungid.com>'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+GOOGLE_RECAPTCHA_SECRET_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY')

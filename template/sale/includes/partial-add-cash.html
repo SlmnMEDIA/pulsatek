@@ -1,3 +1,5 @@
+{% load widget_tweaks %}
+
 <div class="header">
     Request Tambah Saldo Manual
 </div>
@@ -6,9 +8,7 @@
         {% csrf_token %}
         <div class="eight wide field">
             <label for="{{ form.user.id_for_label }}">ID Member</label>
-            <div class="input">
-                {{ form.user}}
-            </div>
+            {{ form.user|add_class:'ui dropdown'}}
         </div>
         <div class="eight wide field">
             <label for="{{ form.nominal.id_for_label }}">Nominal</label>
@@ -22,3 +22,6 @@
         </div>
     </form>
 </div>
+<script>
+    $('.ui.dropdown').dropdown();
+</script>

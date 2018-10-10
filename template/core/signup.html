@@ -59,6 +59,7 @@ Register
                             {% endfor %}
                         {% endif %}
                     </div>
+                    <div class="field g-recaptcha" data-sitekey="6LeQTnQUAAAAAM8r-09zJlsDgHZPYXRROD8e0Jsm"></div>
                     <div class="field">
                         <button type="submit" class="ui large fluid button">Register</button>
                     </div>
@@ -66,6 +67,13 @@ Register
                         <p>
                             <small>Already has account? <a href="{% url 'login' %}">Login</a></small>
                         </p>
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="ui negative message">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </form>
             </div>

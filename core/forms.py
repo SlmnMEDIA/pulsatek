@@ -2,14 +2,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django import forms
 
-from .models import Invitation
-
+from .models import Invitation, MessagePost, User
 
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
         fields = [
-            'email', 'first_name', 'last_name',
+            'email', 'first_name', 'last_name', 'password1', 'password2'
         ]
 
     def __init__(self, ref=None, *args, **kwargs):
@@ -19,7 +18,6 @@ class SignUpForm(UserCreationForm):
             self.mail = invit_obj.email
         except:
             self.mail = None
-
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -66,3 +64,21 @@ class InvitationForm(forms.ModelForm):
             raise forms.ValidationError('Email has been register. Cannot invite registered email.')
 
         return email
+
+
+class MessagePostForm(forms.ModelForm):
+    class Meta:
+        model = MessagePost
+        fields = [
+            'send_to',
+            'subject', 'message',
+            'schedule',
+            'sent_message_now'
+        ]
+
+    def __init__(self, user, *args, **kwargs):
+        super(MessagePostForm, self).__init__(*args, **kwargs)
+        if not user.is_superuser:
+            if user.is_agen:
+                self.fields['send_to'].queryset = User.objects.filter(leader=user)
+        

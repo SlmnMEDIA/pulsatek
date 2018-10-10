@@ -1,0 +1,27 @@
+<table class="ui small fixed table">
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Body</th>
+            <th>Schedule</th>
+            <th>Created By</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for msg in messagelist %}
+            <tr>
+                <td>{{ msg.subject }}</td>
+                <td>{{ msg.message }}</td>
+                <td>{{ msg.schedule }}</td>
+                <td>{{ msg.created_by }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">
+                    No data found.
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

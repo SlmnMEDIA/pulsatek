@@ -1,0 +1,65 @@
+{% load widget_tweaks %}
+
+<div class="header">
+    Create Schedule
+</div>
+<div class="content">
+    <form action="{% url 'core:message_post' %}" class="ui form js-message-form" method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label for="{{ form.send_to.id_for_label }}">Send To</label>
+            {% render_field form.send_to class="ui dropdown" %}
+        </div>
+        <div class="field">
+            <label for="{{ form.subject.id_for_label }}">Subject</label>
+            <div class="ui input">
+                {{ form.subject }}
+            </div>
+        </div>
+        <div class="field">
+            <label for="{{ form.message.id_for_label }">Message</label>
+            <div class="ui input">
+                {{ form.message }}
+            </div>
+        </div>
+        <div class="field">
+            <label for="{{ form.schedule.id_for_label }}">Set Schedule</label>
+            <div class="ui calendar" id="calendar1">
+                <div class="ui left icon input">
+                    <i class="calendar icon"></i>
+                    {{ form.schedule }}
+                </div>
+            </div>
+            {% if form.schedule.errors %}
+                {% for error in form.schedule.errors %}
+                <small style="color:brown">{{ error }}</small>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="field">
+            <label for="{{ form.sent_message_now.id_for_label }}">Send Now</label>
+            <div class="ui input">
+                {{ form.sent_message_now }}
+            </div>
+        </div>
+        <div class="field">
+            <button type="submit" class="ui orange button">Create</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('.ui.dropdown').dropdown();
+    $('#calendar1').calendar({
+        ampm: false,
+        monthFirst: false,
+        formatter: {
+            date: function (date, settings) {
+            if (!date) return '';
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            return year + '-' + month + '-' + day;
+            }
+        }
+    });
+</script>

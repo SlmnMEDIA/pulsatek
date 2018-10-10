@@ -14,6 +14,7 @@
         
         <!-- Css -->
         <link rel="stylesheet" href="{% static 'semantic/semantic.min.css' %}">
+        <link rel="stylesheet" href="{% static 'ui-calendar/calendar.min.css' %}">
         <link rel="stylesheet" href="{% static 'main/main_v2.css' %}">
 
         {% block css %}
@@ -78,7 +79,7 @@
                             {% endif %}
                             {% if user.is_agen or user.is_superuser %}
                             <a href="{% url 'account:member' %}" class="item member">
-                                Member
+                                Management
                                 <i class="users icon"></i>
                             </a>
                             <a href="{% url 'account:payment' %}" class="item member">
@@ -120,6 +121,7 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="{% static 'semantic/semantic.min.js' %}"></script>
+        <script src="{% static 'ui-calendar/calendar.min.js' %}"></script>
         <script src="{% static 'main/main_v2.js' %}"></script>
         {% block js %}
         {% endblock %}

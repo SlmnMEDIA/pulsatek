@@ -1,12 +1,22 @@
 from rest_framework.views import APIView, View
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework import status
-from core.models import User
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+
+import pytz
+from datetime import datetime
+
+
+from core.models import User, SiteMaster, MessagePost
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 
-from .serializers import TokenSerializer, TelegramSerilizer
+from .serializers import (
+    TokenSerializer, TelegramSerilizer, SiteSerializer, 
+    MessagePostSerializer, MessageUpdateSerializer
+)
 
 
 @api_view(['POST'])
@@ -36,3 +46,24 @@ def telegramRegisterPost(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SiteDetailView(RetrieveAPIView):
+    queryset = SiteMaster.objects.all()
+    serializer_class = SiteSerializer
+
+
+
+class MessagePostListApiView(ListAPIView):
+    queryset = MessagePost.objects.filter(closed=False, schedule__lte=timezone.now())
+    serializer_class = MessagePostSerializer
+    # permission_classes = [
+    #     IsAuthenticated
+    # ]
+
+
+
+class MessageApiUpdateView(RetrieveUpdateAPIView):
+    queryset = MessagePost.objects.filter(closed=False)
+    serializer_class = MessageUpdateSerializer
+    # permission_classes = [
+    #     IsAuthenticated
+    # ]
