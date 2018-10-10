@@ -34,7 +34,7 @@ def sale_transport_trx(sender, instance, created, **kwargs):
             'uid':settings.RAJA_UID,
             'pin':settings.RAJA_KEY,
             'no_hp':instance.phone,
-            'kode_produk':instance.product.product_code,
+            'kode_produk':instance.product.server.code,
             'ref1':instance.trx_code,
         }
 
@@ -42,14 +42,13 @@ def sale_transport_trx(sender, instance, created, **kwargs):
         urls = settings.RAJA_URLS
 
         # Send only in production mode
-        if not settings.DEBUG:
-            try:
-                r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
-                if r.status_code == requests.codes.ok :
-                    rjson = r.json()
-                r.raise_for_status()
-            except :
-                pass
+        try:
+            r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
+            if r.status_code == requests.codes.ok :
+                rjson = r.json()
+            r.raise_for_status()
+        except :
+            pass
 
         responsetrx_obj.kode_produk = rjson.get('KODE_PRODUK', '')
         responsetrx_obj.waktu = rjson.get('WAKTU', '')

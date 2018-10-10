@@ -176,7 +176,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 RAJA_UID = config('RAJA_UID')
 RAJA_KEY = config('RAJA_KEY')
-RAJA_URLS = []
+RAJA_URLS = config('RAJA_URLS', cast=Csv())
 
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
