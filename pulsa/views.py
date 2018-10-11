@@ -7,10 +7,13 @@ from django.http.response import JsonResponse
 
 from .models import (
     Product,
-    Operator, PrefixNumber
+    Operator, PrefixNumber,
+    ResponseTrx
 )
 
 from .forms import NewProductForm, NewTransactionForm
+from .tasks import bulk_update
+
 
 # POSTING NEW TRX
 @login_required(login_url='/login/')
@@ -94,6 +97,17 @@ def addproductView(request):
     )
 
     return JsonResponse(data)
+
+
+def bulk_updateTransaction(request):
+    res_objs = ResponseTrx.objects.filter(
+        trx__closed=False
+    )
+    if res_objs.exists():
+        bulk_update.delay()
+        
+    return JsonResponse({'items': res_objs.count()})
+
 
 # @login_required
 # def updateproductView(request, id):

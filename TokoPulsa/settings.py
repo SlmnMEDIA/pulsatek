@@ -187,3 +187,5 @@ DEFAULT_FROM_EMAIL = 'Warungid Team <no-reply@warungid.com>'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 GOOGLE_RECAPTCHA_SECRET_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY')
+
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')

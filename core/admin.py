@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here
 from .models import StatusTransaction, User, Invitation, SiteMaster, MessagePost, Telegram
-from .resources import UserResource
+from .resources import UserResource, TelegramResource
 
 @admin.register(StatusTransaction)
 class StatusAdmin(admin.ModelAdmin):
@@ -11,8 +11,9 @@ class StatusAdmin(admin.ModelAdmin):
 
 
 @admin.register(Telegram)
-class TelegramAdmin(admin.ModelAdmin):
-    pass
+class TelegramAdmin(ImportExportModelAdmin):
+    resource_class = TelegramResource
+    list_display = ['user', 'telegram']
 
 
 @admin.register(User)
