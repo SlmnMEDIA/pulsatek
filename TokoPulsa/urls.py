@@ -41,6 +41,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('sale/', include('sale.urls')),
     path('listrik/', include('listrik.urls')),
+    path('api/listrik/', include('listrik.api.urls')),
     path('core/', include('core.urls')),
     path('api/core/', include('core.api.urls')),
 ]

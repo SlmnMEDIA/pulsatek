@@ -30,7 +30,14 @@ class OperatorAdmin(admin.ModelAdmin):
     form = OperatorFrom
 
 
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = [
+        'trx_code', 'product', 'price', 'get_responsetrx', 'record',
+        'buyer', 'get_trx_status', 'timestamp'
+    ]
+
+
 admin.site.register(StatusTransaction)
-admin.site.register(Transaction)
 admin.site.register(ResponseTrx)
 

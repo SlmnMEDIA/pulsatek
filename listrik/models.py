@@ -47,6 +47,21 @@ class Product(models.Model):
     def __str__(self):
         return self.product_code
 
+    def product_desc(self):
+        if self.description: 
+            return self.description
+        return "{} harga Rp. {:0,.2f}".format(self.product_title().title(), self.price)
+
+    def add_info(self):
+        if self.additional_info:
+            return self.additional_info
+        return 'Masukan No. ID Pelanggan / No. Meter listrik Anda.\nContoh : 11991888111'
+
+    def product_title(self):
+        if self.product_name:
+            return self.product_name
+        return 'PRODUK LISTRIK'
+
 
 class Transaction(models.Model):
     trx_code = models.CharField(max_length=100, blank=True)
@@ -82,6 +97,9 @@ class Transaction(models.Model):
 
     def customer(self):
         return re.sub(r'\d{3}$','xxx', self.phone)
+
+    def get_detail_response(self):
+        return self.responsetrx.datail
 
 class StatusTransaction(models.Model):
     INPROCESS = 'IN'
