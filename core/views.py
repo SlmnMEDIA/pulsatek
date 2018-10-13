@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Sum
 from django.conf import settings
 from django.contrib import messages
+from django.core.mail import send_mail
 
 import requests
 
@@ -45,6 +46,16 @@ def signupViews(request):
                 except:
                     form.save()
 
+                user = User_class.objects.get(pk=instance.id)
+                subject = 'Registrasi Member WarungID'
+                body = render_to_string(
+                    'email/register-email.html',
+                    {'newuser': user}
+                )
+                sender = 'support@warungid.com'
+                receiver = [user.email]
+                send_mail(subject, body, sender, receiver)
+                
                 return redirect('account:index')
             else :
                 messages.error(request, 'Invalid reCAPTCHA. Please try again.')

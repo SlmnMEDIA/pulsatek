@@ -59,7 +59,7 @@ class TransactionPostSerializer(ModelSerializer):
         model = Transaction
         fields = [
             'trx_code', 'phone', 'product',
-            'timestamp', 'closed'
+            'timestamp', 'closed',
         ]
 
     def validate_phone(self, value):

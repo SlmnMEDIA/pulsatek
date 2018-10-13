@@ -4,6 +4,13 @@
             <h2 class="ui center aligned header">
                 E-Transport
             </h2>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="ui negative message">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
             <form action="{% url 'transport:topup' %}" method="post" class="ui large form">
                 {% csrf_token %}
                 <div class="field">

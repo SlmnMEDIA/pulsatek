@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http.response import JsonResponse
+from django.contrib import messages
 
 # Create your views here.
 
@@ -15,13 +16,16 @@ from .forms import NewTransactionForm
 @login_required(login_url='/login/')
 def newTrxview(request):
     data = dict()
-    form = NewTransactionForm(request.POST or None)
+    form = NewTransactionForm(request.user, request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
             instance.buyer = request.user
             instance.save()
+            messages.success(request, 'Pembelian berhasil.')
             return redirect('account:index')
+        else:
+            messages.error(request, 'Transaksi gagal.')
 
     content = {
         'form': form,

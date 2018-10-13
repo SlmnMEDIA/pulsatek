@@ -1,0 +1,22 @@
+{% autoescape off %}
+Dear {{ newuser.first_name|title }},
+
+Terimakasih sudah bergabung bersama WarungId.com. 
+Untuk dapat melakukan transaksi pertama Anda, kami sarankan untuk
+melakukan Verifikasi pada applikasi Telegram Anda dengan mengirimkan 
+Code Verifikasi sbb :
+
+Kode : {{ newuser.pin }}
+
+Ketik sesuai format #token{{ newuser.pin}} pada Aplikasi Telegram
+http://t.me/warungid_bot
+
+
+Untuk informasi lebih lanjut kunjungi website Kami di http://warungid.com
+Terima kasih~
+
+
+Salam,
+
+WarungId
+{% endautoescape %}

@@ -10,6 +10,16 @@ class NewTransactionForm(forms.ModelForm):
             'phone', 'product'
         ]
 
+    def __init__(self, user, *args, **kwargs):
+        super(NewTransactionForm, self).__init__(*args, **kwargs)
+        self.balance = user.saldo + user.limit
+
+    def clean_product(self):
+        prod = self.cleaned_data['product']
+        if self.balance - prod.price < 0:
+            raise forms.ValidationError('Saldo is not enough.')
+        return prod
+
 
 class OperatorForm(forms.ModelForm):
     class Meta:

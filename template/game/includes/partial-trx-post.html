@@ -4,6 +4,13 @@
             <h2 class="ui center aligned header">
                 Game Online
             </h2>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="ui negative message">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
             <form action="{% url 'game:topup' %}" method="post" class="ui large form">
                 {% csrf_token %}
                 <div class="field">
