@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.conf import settings
 
+import requests, json
 from .models import StatusTransaction
 
 @shared_task
@@ -24,7 +25,7 @@ def bulk_update():
         if res.ref1 is not None and res.ref1 !='':
             payload['tgl1'] = res.waktu
             payload['tgl2'] = res.waktu
-            paylaod['id_transaksi'] = res.ref2
+            payload['id_transaksi'] = res.ref2
 
             try :
                 r = requests.post(url[0], data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'})
@@ -38,7 +39,7 @@ def bulk_update():
                         res.status = statcode,
                         res.ket = stat
                         res.save()
-                        if res.status == '00':
+                        if '00' in res.status:
                             if res.sn != '' and res.sn is not None:
                                 StatusTransaction.objects.create(
                                     trx = res.trx, status='SS'
