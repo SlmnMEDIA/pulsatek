@@ -1,4 +1,6 @@
 {% extends 'base_v3.html' %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block title %}
 Register
@@ -7,17 +9,19 @@ Register
 {% block content %}
 <div class="ui container">
     <div class="ui stackable centered middle aligned grid" style="min-height:600px">
-        <div class="six wide column">
-            <h2 class="ui top attached centered header">
-                Register
-            </h2>
-            <div class="ui bottom attached segment">
-                <form action="" class="ui large form" method="post">
+        <div class="seven wide column">
+            <div class="ui padded segment" style="background-color:rgba(255,255,255,.3)">
+                <div class="ui basic center aligned segment">
+                    <a href="{% url 'home' %}" class="ui small image">
+                        <img src="{% static 'logo/logowarungid3.png' %}" alt="" class="">
+                    </a>
+                </div>
+                <form action="" class="ui inverted large form" method="post">
                     {% csrf_token %}
                     <div class="field">
                         <label for="{{ form.email.id_for_label }}">Email Address</label>
                         <div class="ui left icon {% if form.mail %}disabled{% endif %} input">
-                            {{ form.email }}
+                            {% render_field form.email placeholder="example@mail.com"%}
                             <i class="user icon"></i>
                         </div>
                         {% if form.email.errors %}
@@ -30,27 +34,27 @@ Register
                         <div class="eight wide field">
                             <label for="{{ form.first_name.id_for_label }}">First Name</label>
                             <div class="ui input">
-                                {{ form.first_name }}
+                                {% render_field form.first_name placeholder="Firstname" %}
                             </div>
                         </div>
                         <div class="eight wide field">
                             <label for="{{ form.last_name.id_for_label }}">Last Name</label>
                             <div class="ui input">
-                                {{ form.last_name }}
+                                {% render_field form.last_name placeholder="Optional"%}
                             </div>
                         </div>
                     </div>
                     <div class="field">
                         <label for="{{ form.password1.id_for_label }}">Password</label>
                         <div class="ui left icon input">
-                            {{ form.password1 }}
+                            {% render_field form.password1 placeholder="[Min 6 Characters]"%}
                             <i class="key icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
                         <div class="ui left icon input">
-                            {{ form.password2 }}
+                                {% render_field form.password2 placeholder="[Min 6 Characters]"%}
                             <i class="key icon"></i>
                         </div>
                         {% if form.password2.errors %}
@@ -61,7 +65,7 @@ Register
                     </div>
                     <div class="field g-recaptcha" data-sitekey="6Leg3y8UAAAAANwsP6ihXg9As64qH0BDxtoYwiMV"></div>
                     <div class="field">
-                        <button type="submit" class="ui large fluid button">Register</button>
+                        <button type="submit" class="ui teal large fluid button">Register</button>
                     </div>
                     <div class="field">
                         <p>

@@ -1,4 +1,6 @@
 {% extends 'base_v3.html' %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block title %}
 Login Warungid
@@ -6,20 +8,20 @@ Login Warungid
 
 {% block content %}
 <div class="ui text container">
-    <div class="ui stackable middle aligned centered grid" style="height:500px">
+    <div class="ui stackable middle aligned centered grid" style="min-height:500px">
         <div class="nine wide column">
-            <div class="ui top attached segment">
-                <div class="ui header">
-                    Login
+            <div class="ui padded segment" style="background-color:rgba(255,255,255,.5)">
+                <div class="ui basic center aligned segment">
+                    <a href="{% url 'home' %}" class="ui small image">
+                        <img src="{% static 'logo/logowarungid3.png' %}" alt="" class="">
+                    </a>
                 </div>
-            </div>
-            <div class="ui bottom attached segment">
-                <form action="" class="ui large form" method="post">
+                <form action="" class="ui inverted large form" method="post">
                     {% csrf_token %}
                     <div class="field">
                         <label for="{{ form.username.id_for_label }}">Email Address</label>
                         <div class="ui left icon input">
-                            {{ form.username }}
+                            {% render_field form.username placeholder="example@mail.com" %}
                             <i class="user icon"></i>
                         </div>
                         {% if form.username.errors %}
@@ -31,7 +33,7 @@ Login Warungid
                     <div class="field">
                         <label for="{{ form.password.id_for_label }}">Password</label>
                         <div class="ui left icon input">
-                            {{ form.password }}
+                            {% render_field form.password %}
                             <i class="key icon"></i>
                         </div>
                         {% if form.password.errors %}

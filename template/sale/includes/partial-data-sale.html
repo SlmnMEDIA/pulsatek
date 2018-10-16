@@ -1,6 +1,6 @@
 {% for sale in sales %}
     <tr class="">
-        <td>{{ sale.trx_obj }}</td>
+        <td>{{ sale.trx_obj }} <br><small style="color:#666">{{ sale.trx_obj.responsetrx.ref2 }}</small> </td>
         <td>{{ sale.trx_obj.customer }}</td>
         <td>{{ sale.trx_obj.product.product_name }}</td>
         <td>

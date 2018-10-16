@@ -16,11 +16,15 @@
 
         {% block css %}
         {% endblock %}
+        <style>
+            body {
+                background-color:#45AFB6;
+            }
+        </style>
 
         <script src='https://www.google.com/recaptcha/api.js'></script>
     </head>
     <body>
-        <!-- {% include 'header.html' %} -->
 
         <div class="ui basic vertical segment">
             {% block content %}

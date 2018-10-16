@@ -1,5 +1,7 @@
 // js
 $(document).ready(function() {
+    $('.ui.dropdown').dropdown();
+    
     // da
     $.ajax({
         url:'/sale/profit/',
@@ -7,5 +9,6 @@ $(document).ready(function() {
         success: function(data) {
             $('#profit').html(data.html);
         }
-    })
+    });
+
 });

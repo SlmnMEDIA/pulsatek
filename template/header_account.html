@@ -1,0 +1,30 @@
+{% load static %}
+
+<div class="ui top fixed small pointing menu">
+    <div class="ui fluid container">
+        <div class="right menu">
+            <a href="#" class="item">
+                Support
+            </a>
+            <a href="#" class="item">
+                Documentations
+            </a>
+            {% if user.is_authenticated %}
+            <div class="ui dropdown link item">
+                <span class="text">{{ user.email }}</span>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a href="#" class="item">
+                        <i class="setting icon"></i>
+                        Profile
+                    </a>
+                    <a href="{% url 'logout' %}" class="item">
+                        <i class="power off icon"></i>
+                        Logout 
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
