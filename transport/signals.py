@@ -62,9 +62,6 @@ def sale_transport_trx(sender, instance, created, **kwargs):
         responsetrx_obj.sisa_saldo = int(rjson.get('SISA_SALDO', 0))
         responsetrx_obj.save()
 
-        if responsetrx_obj.status == '99':
-            StatusTransaction.objects.create(trx=instance, status='FA')
-
 
 @receiver(post_save, sender=StatusTransaction)
 def status_record_updater(sender, instance, created, **kwargs):

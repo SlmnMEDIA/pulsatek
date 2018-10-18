@@ -2,7 +2,7 @@ from celery import shared_task
 from django.conf import settings
 
 import requests, json
-from .models import StatusTransaction
+from .models import StatusTransaction, ResponseTrx
 
 @shared_task
 def bulk_update():
@@ -41,18 +41,19 @@ def bulk_update():
                             code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
                             res.sn = sn
                             res.price = int(price)
-                            res.status = statcode,
+                            res.status = statcode
                             res.ket = stat
                             res.save()
-                            if '00' in res.status:
-                                if res.sn != '' and res.sn is not None:
+                            if res.status is not None and res.status != '':
+                                if res.status=='00':
+                                    if res.sn != '' and res.sn is not None:
+                                        StatusTransaction.objects.create(
+                                            trx = res.trx, status='SS'
+                                        )
+                                else :
                                     StatusTransaction.objects.create(
-                                        trx = res.trx, status='SS'
+                                        trx = res.trx, status='FA'
                                     )
-                            else :
-                                StatusTransaction.objects.create(
-                                    trx = res.trx, status='FA'
-                                )
                 except:
                     pass
 

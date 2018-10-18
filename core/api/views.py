@@ -53,12 +53,14 @@ class SiteDetailView(RetrieveAPIView):
 
 
 class MessagePostListApiView(ListAPIView):
-    queryset = MessagePost.objects.filter(closed=False, schedule__lte=timezone.now())
     serializer_class = MessagePostSerializer
     # permission_classes = [
     #     IsAuthenticated
     # ]
 
+    def get_queryset(self):
+        new_queryset = MessagePost.objects.filter(closed=False, schedule__lte=timezone.now())
+        return new_queryset
 
 
 class MessageApiUpdateView(RetrieveUpdateAPIView):

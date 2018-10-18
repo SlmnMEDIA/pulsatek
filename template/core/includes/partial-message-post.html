@@ -1,14 +1,14 @@
 {% load widget_tweaks %}
 
 <div class="header">
-    Create Schedule
+    Create Message Schedule
 </div>
 <div class="content">
     <form action="{% url 'core:message_post' %}" class="ui form js-message-form" method="post">
         {% csrf_token %}
         <div class="field">
             <label for="{{ form.send_to.id_for_label }}">Send To</label>
-            {% render_field form.send_to class="ui dropdown" %}
+            {% render_field form.send_to class="ui search dropdown" %}
         </div>
         <div class="field">
             <label for="{{ form.subject.id_for_label }}">Subject</label>
@@ -35,12 +35,6 @@
                 <small style="color:brown">{{ error }}</small>
                 {% endfor %}
             {% endif %}
-        </div>
-        <div class="field">
-            <label for="{{ form.sent_message_now.id_for_label }}">Send Now</label>
-            <div class="ui input">
-                {{ form.sent_message_now }}
-            </div>
         </div>
         <div class="field">
             <button type="submit" class="ui orange button">Create</button>

@@ -8,7 +8,7 @@
         {% csrf_token %}
         <div class="eight wide field">
             <label for="{{ form.user.id_for_label }}">ID Member</label>
-            {{ form.user|add_class:'ui dropdown'}}
+            {{ form.user|add_class:'ui search selection dropdown'}}
         </div>
         <div class="eight wide field">
             <label for="{{ form.nominal.id_for_label }}">Nominal</label>

@@ -125,28 +125,6 @@ class StatusTransaction(models.Model):
     def __str__(self):
         return str(self.status)
 
-# class ResponseInquery(models.Model):
-#     trx = models.OneToOneField(Transaction, on_delete=models.CASCADE)
-#     kode_produk = models.CharField(max_length=50, blank=True)
-#     waktu = models.CharField(max_length=50, blank=True)
-#     idpel1 = models.CharField(max_length=50, blank=True)
-#     idpel2 = models.CharField(max_length=50, blank=True)
-#     idpel3 = models.CharField(max_length=50, blank=True)
-#     nama_pelanggan = models.CharField(max_length=50, blank=True)
-#     periode = models.CharField(max_length=50, blank=True)
-#     nominal = models.PositiveIntegerField(default=0)
-#     admin = models.CharField(max_length=50, blank=True)
-#     ref1 = models.CharField(max_length=50, blank=True)
-#     ref2 = models.CharField(max_length=50, blank=True)
-#     ref3 = models.CharField(max_length=50, blank=True)
-#     status = models.CharField(max_length=50, blank=True)
-#     ket = models.CharField(max_length=200, blank=True)
-#     saldo_terpotong = models.PositiveIntegerField(default=0)
-#     sisa_saldo = models.PositiveIntegerField(default=0)
-#     url_struk = models.CharField(max_length=200, blank=True)
-#     imestamp = models.DateTimeField(auto_now_add=True)
-#     update = models.DateTimeField(auto_now=True)
-
 
 class ResponseTrx(models.Model):
     trx = models.OneToOneField(Transaction, on_delete=models.CASCADE)

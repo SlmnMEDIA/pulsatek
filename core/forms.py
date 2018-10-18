@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django import forms
+from django.utils import timezone
 
 from .models import Invitation, MessagePost, User
 
@@ -73,12 +74,17 @@ class MessagePostForm(forms.ModelForm):
             'send_to',
             'subject', 'message',
             'schedule',
-            'sent_message_now'
         ]
 
     def __init__(self, user, *args, **kwargs):
         super(MessagePostForm, self).__init__(*args, **kwargs)
+        self.fields['send_to'].queryset = User.objects.filter(telegram__isnull=False)
         if not user.is_superuser:
             if user.is_agen:
-                self.fields['send_to'].queryset = User.objects.filter(leader=user)
+                self.fields['send_to'].queryset = User.objects.filter(leader=user, telegram__isnull=False)
         
+    def clean_schedule(self):
+        schedule = self.cleaned_data.get('schedule')
+        if schedule is None or schedule == '':
+            schedule = timezone.now()
+        return schedule

@@ -99,8 +99,8 @@ def sale_listrik_trx(sender, instance, created, **kwargs):
         responsetrx_obj.save()
         
 
-        if responsetrx_obj.status == '99':
-            StatusTransaction.objects.create(trx=instance, status='FA')
+        # if responsetrx_obj.status == '99':
+        #     StatusTransaction.objects.create(trx=instance, status='FA')
 
 
 @receiver(post_save, sender=StatusTransaction)

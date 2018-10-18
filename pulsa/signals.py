@@ -2,7 +2,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.conf import settings
 
-import requests, json
+import requests, json, re
 
 from .models import Transaction, ResponseTrx, StatusTransaction
 from sale.models import Sale
@@ -61,8 +61,6 @@ def sale_pulsa_trx(sender, instance, created, **kwargs):
         responsetrx_obj.sisa_saldo = int(rjson.get('SISA_SALDO', 0))
         responsetrx_obj.save()
 
-        if responsetrx_obj.status == '99':
-            StatusTransaction.objects.create(trx=instance, status='FA')
 
 
 @receiver(post_save, sender=StatusTransaction)

@@ -56,14 +56,11 @@ def sale_game_trx(sender, instance, created, **kwargs):
         responsetrx_obj.sn = rjson.get('SN', '')
         responsetrx_obj.ref1 = rjson.get('REF1', '')
         responsetrx_obj.ref2 = rjson.get('REF2', '')
-        responsetrx_obj.status = rjson.get('STATUS', '99')
+        responsetrx_obj.status =  rjson.get('STATUS', '99')
         responsetrx_obj.ket = rjson.get('KET', 'Gagal terhubung ke server / timeout')
         responsetrx_obj.saldo_terpotong = int(rjson.get('SALDO_TERPOTONG', 0))
         responsetrx_obj.sisa_saldo = int(rjson.get('SISA_SALDO', 0))
         responsetrx_obj.save()
-
-        if responsetrx_obj.status == '99':
-            StatusTransaction.objects.create(trx=instance, status='FA')
 
 
 @receiver(post_save, sender=StatusTransaction)
