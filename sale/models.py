@@ -74,5 +74,6 @@ class Cash(models.Model):
     nominal = models.PositiveIntegerField()
     validated = models.BooleanField(default=False)
     validateby = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='cashvalid')
+    delivered = models.BooleanField(default=False)
     payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

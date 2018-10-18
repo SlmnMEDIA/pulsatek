@@ -3,7 +3,8 @@ from django.template.loader import render_to_string
 from django.http.response import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Q, Sum, Value as V
+from django.db.models.functions import Coalesce
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -103,7 +104,7 @@ def userAgenListView(request):
     user_objs = User_class.objects.filter(
         is_agen=True
     ).annotate(
-        c_member = Count('user')
+        c_member = Count('user'),
     )
 
     content = {

@@ -108,7 +108,9 @@ class TransactionCreatePost(APIView):
             output['trx'] = serializer_creator.data
             status_obj = StatusTransaction.objects.get(code='00')
             output['status'] = StatusTrx(status_obj).data
-            output['saldo'] = request.user.saldo
+            user_obj = request.user
+            user_obj.refresh_from_db()
+            output['saldo'] = user_obj.saldo
             return Response(output)
 
         return Response(serializer_creator.errors, status=status.HTTP_400_BAD_REQUEST)

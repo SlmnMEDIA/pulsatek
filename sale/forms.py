@@ -14,4 +14,5 @@ class AddCashForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(AddCashForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = userClass.objects.filter(leader=user)
+        if not user.is_superuser:
+            self.fields['user'].queryset = userClass.objects.filter(leader=user)

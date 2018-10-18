@@ -71,7 +71,7 @@ def chart_pulsa(request):
     for i in dataset :
         data[i['product_code']] = i['c_prod']
 
-    # sort_days = sorted(list(data_in_date.keys()))
+    short_prod = sorted(list(map(lambda x: x, data)))
 
     chart = {
         'chart': {'type': 'column', 'backgroundColor': 'transparent', 'height':300},
@@ -82,12 +82,12 @@ def chart_pulsa(request):
             },
         ],
         'xAxis': {
-            'categories': list(map(lambda x: x, data))
+            'categories': short_prod
         },
         'series': [
             {
                 'name': 'Out',
-                'data': list(map(lambda x : data[x], data)),
+                'data': list(map(lambda x : data[x], short_prod)),
             }
         ]
     }
@@ -180,6 +180,12 @@ def addCashSaldo(request):
             instance = form.save(commit=False)
             instance.agen = request.user
             instance.save()
+
+            # temporary func
+            cash_obj = Cash.objects.get(pk=instance.id)
+            cash_obj.validated = True
+            cash_obj.validateby = request.user
+            cash_obj.save(update_fields=['validated'])
             data['form_is_valid'] = True
         else :
             data['form_is_valid'] = False
@@ -229,11 +235,13 @@ def cashListView(request):
 @user_is_staff_only
 def cashValidationView(request, id):
     data = dict()
-    cash_obj = get_object_or_404(Cash, pk=id, validated=False)
+    cash_obj = get_object_or_404(Cash, pk=id, delivered=False)
     if request.method == 'POST':
-        cash_obj.validated = True
-        cash_obj.validateby = request.user
-        cash_obj.save(update_fields=['validated'])
+        # cash_obj.validated = True
+        # cash_obj.validateby = request.user
+        # cash_obj.save(update_fields=['validated'])
+        cash_obj.delivered = True
+        cash_obj.save()
 
         cash_objs = Cash.objects.all()
         data['data_html'] = render_to_string(

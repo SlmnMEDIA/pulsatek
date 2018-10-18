@@ -3,10 +3,12 @@ from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count
+from django.db.models import Count, Sum, Q, Value as V
+from django.db.models.functions import Coalesce
 
 from .managers import UserManager
 from .utils import generate_pin_code, generate_invitation_code
+from sale.models import Cash
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -54,6 +56,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.avatar:
             return '/media/'+self.avatar
         return '/media/avatars/default.jpg'
+
+    def undeliver_cash(self):
+        try :
+            cash_objs = Cash.objects.filter(
+                validateby=self
+            ).aggregate(
+                undeliver = Coalesce(Sum('nominal', filter=Q(delivered=False)), V(0))
+            )
+            return cash_objs['undeliver']
+        except :
+            return 0
 
     @property
     def get_telegram(self):

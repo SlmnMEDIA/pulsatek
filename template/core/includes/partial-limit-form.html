@@ -21,7 +21,7 @@
             <div class="ui input">
                 {{ form.limit }}
             </div>
-            <small>Max. Rp {{ user.limit_max|intcomma }}</small>
+            <small>{% if user.is_superuser %}Unlimited{% else %}Max. Rp {{ user.limit_max|intcomma }}{% endif %}</small>
         </div>
         <div class="field">
             <button type="submit" class="ui large primary button">Update</button>
