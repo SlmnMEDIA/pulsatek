@@ -28,6 +28,8 @@ def payment_process(sender, instance, created, **kwargs):
             debit = instance.nominal,
             user = instance.user
         )
+        
+
 
 
 @receiver(post_save, sender=Cash)

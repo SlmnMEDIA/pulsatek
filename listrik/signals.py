@@ -59,24 +59,23 @@ def sale_listrik_trx(sender, instance, created, **kwargs):
         except :
             pass
 
-            if rjson.get('STATUS', '99') == '00':
-                payload['method'] = 'rajabiller.paydetail'
-                payload['ref2'] = rjson['REF2']
-                payload['nominal'] = instance.product.nominal
-                payload['ref3'] = ''
-                
+        if  rjson.get('STATUS', '99') == '00':
+            payload['method'] = 'rajabiller.paydetail'
+            payload['ref2'] = rjson['REF2']
+            payload['nominal'] = instance.product.nominal
+            payload['ref3'] = ''
+            
+            try:
+                r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
+                if r.status_code == requests.codes.ok :
+                    rjson = r.json()
 
-                try:
-                    r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
-                    if r.status_code == requests.codes.ok :
-                        rjson = r.json()
-
-                        token = rjson['DETAIL']['TOKEN']
-                        kwh = rjson['DETAIL']['PURCHASEDKWHUNIT']
-                        struk  = "STRUK PEMBELIAN LISTRIK PRABAYAR\n\nTOKEN : {}\nKWH : {}".format(token, int(kwh)/100)
-                    r.raise_for_status()
-                except :
-                    pass
+                    token = rjson['DETAIL']['TOKEN']
+                    kwh = rjson['DETAIL']['PURCHASEDKWHUNIT']
+                    struk  = "STRUK PEMBELIAN LISTRIK PRABAYAR\n\nTOKEN : {}\nKWH : {}".format(token, int(kwh)/100)
+                r.raise_for_status()
+            except :
+                pass
 
         responsetrx_obj.kode_produk = rjson.get('KODE_PRODUK', '')
         responsetrx_obj.waktu = rjson.get('WAKTU', '')
@@ -97,10 +96,6 @@ def sale_listrik_trx(sender, instance, created, **kwargs):
         responsetrx_obj.url_struk = rjson.get('URL_STRUK', '')
         responsetrx_obj.datail = struk
         responsetrx_obj.save()
-        
-
-        # if responsetrx_obj.status == '99':
-        #     StatusTransaction.objects.create(trx=instance, status='FA')
 
 
 @receiver(post_save, sender=StatusTransaction)

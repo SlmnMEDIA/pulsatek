@@ -65,6 +65,7 @@ class Sale(models.Model):
 class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nominal = models.PositiveIntegerField()
+    noted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
 

@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/transport/', include('transport.api.urls')),
     path('account/', include('account.urls')),
     path('sale/', include('sale.urls')),
+    path('api/sale/', include('sale.api.urls')),
     path('listrik/', include('listrik.urls')),
     path('api/listrik/', include('listrik.api.urls')),
     path('core/', include('core.urls')),
