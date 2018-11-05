@@ -5,7 +5,7 @@
         <tr>
             <th>Agen Id</th>
             <th>Full Name</th>
-            <th>Count Member</th>
+            <th>Profit</th>
             <th>Unreport Cash</th>
             <th></th>
         </tr>
@@ -15,7 +15,7 @@
         <tr>
             <td>{{ agen }}</td>
             <td>{{ agen.full_name|title }}</td>
-            <td>{{ agen.c_member }}</td>
+            <td>{{ agen.v_profit|intcomma }}</td>
             <td>{{ agen.undeliver_cash|intcomma }}</td>
             <td></td>
         </tr>

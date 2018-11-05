@@ -102,6 +102,14 @@ class Invitation(models.Model):
             self.code = generate_invitation_code(self)
         
         super(Invitation, self).save(*args, **kwargs)
+        
+
+class AgenPayment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    profit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    payed = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
 
 
 class SiteMaster(models.Model):

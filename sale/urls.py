@@ -12,4 +12,5 @@ urlpatterns = [
     path('cash/', views.cashListView, name="cash_list"),
     path('cash/<int:id>/validation/', views.cashValidationView, name="cash_validation"),
     path('payment/', views.paymentListView, name='payment_list'),
+    path('profit/bulk-update/', views.bulkProfitView, name='profit_bulk'),
 ]

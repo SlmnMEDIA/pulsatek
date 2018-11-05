@@ -19,6 +19,8 @@ class Sale(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     ref = models.OneToOneField('self', on_delete=models.SET_NULL, blank=True, null=True)
     success = models.BooleanField(default=True)
+    saleprofit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    closed = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 

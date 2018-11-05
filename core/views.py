@@ -14,6 +14,7 @@ import requests
 from .forms import SignUpForm, LimitUserForm, InvitationForm, MessagePostForm
 from .decorators import user_is_agen_or_staff, user_is_referal_agen, user_is_staff_only
 from .models import Invitation, MessagePost
+from sale.models import Sale
 
 User_class = get_user_model()
 
@@ -97,6 +98,7 @@ def userListView(request):
     return JsonResponse(data)
 
 
+# AGEN LIST USER
 @login_required
 @user_is_staff_only
 def userAgenListView(request):
@@ -104,7 +106,8 @@ def userAgenListView(request):
     user_objs = User_class.objects.filter(
         is_agen=True
     ).annotate(
-        c_member = Count('user'),
+        # c_member = Count('user'),
+        v_profit = Sum('sale__saleprofit') * 0.8
     )
 
     content = {
