@@ -157,12 +157,14 @@ class StatusTransaction(models.Model):
     SUCCESS = 'SS'
     FAILED = 'FA'
     CANCEL = 'CA'
+    FORCE_SUCCESS = 'FS'
     STATUS_TYPE = (
         (INPROCESS, 'IN PROCESS'),
         (PENDING, 'PENDING'),
         (SUCCESS, 'SUCCESS'),
         (FAILED, 'FAILED'),
-        (CANCEL, 'CANCELED')
+        (CANCEL, 'CANCELED'),
+        (FORCE_SUCCESS, 'SUCESSED')
     )
     trx = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     status = models.CharField(max_length=2, choices=STATUS_TYPE, default='IN')

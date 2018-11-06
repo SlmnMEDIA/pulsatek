@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count, Q
@@ -14,7 +14,8 @@ from core.forms import InvitationForm
 # INDEX / DASHBOARD VIEW
 @login_required(login_url='/login/')
 def indexView(request):
-    return render(request, 'account/index_v2.html')
+    return redirect('account:cart')
+    # return render(request, 'account/index_v2.html')
 
 
 @login_required(login_url='/login/')

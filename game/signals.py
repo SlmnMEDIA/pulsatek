@@ -69,19 +69,37 @@ def status_record_updater(sender, instance, created, **kwargs):
         transaction_obj = Transaction.objects.get(statustransaction__id=instance.id)
         # if transaction has failed or canceled by admiin
         if instance.status in ['FA', 'CA']:
-            Sale.objects.create(
+            sale_obj = Sale.objects.create(
                 user = transaction_obj.buyer,
                 type_income = 'IN',
                 ref = transaction_obj.record,
                 debit = transaction_obj.price
             )
-            transaction_obj.closed = True
-            transaction_obj.save()
 
-            transaction_obj.record.success = False
-            transaction_obj.record.save()
+            old_record = transaction_obj.record
+            old_record.success = False
+            old_record.save()
+
+            transaction_obj.closed = True
+            transaction_obj.record = sale_obj
+            transaction_obj.save()
 
         # if transaction success then closed trx
         elif instance.status == 'SS':
             transaction_obj.closed = True
+            transaction_obj.save()
+
+        elif isinstance.status == 'FS':
+            sale_obj = Sale.objects.create(
+                user = transaction_obj.buyer,
+                type_income = 'OUT',
+                ref = transaction_obj.record,
+                credit = transaction_obj.price
+            )
+            old_record = transaction_obj.record
+            old_record.success = False
+            old_record.save()
+
+            transaction_obj.closed = True
+            transaction_obj.record = sale_obj
             transaction_obj.save()
