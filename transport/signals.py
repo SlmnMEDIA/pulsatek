@@ -89,7 +89,7 @@ def status_record_updater(sender, instance, created, **kwargs):
             transaction_obj.closed = True
             transaction_obj.save()
 
-        elif isinstance.status == 'FS':
+        elif instance.status == 'FS':
             sale_obj = Sale.objects.create(
                 user = transaction_obj.buyer,
                 type_income = 'OUT',

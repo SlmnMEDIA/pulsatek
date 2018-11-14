@@ -51,6 +51,8 @@ def bulk_update():
                                         StatusTransaction.objects.create(
                                             trx = res.trx, status='SS'
                                         )
+                                elif res.status=='68':
+                                    pass
                                 else :
                                     StatusTransaction.objects.create(
                                         trx = res.trx, status='FA'

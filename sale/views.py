@@ -102,7 +102,9 @@ def chart_pulsa(request):
 def saleListView(request):
     data = dict()
     sale_objs = Sale.objects.filter(
-        type_income = 'OUT'
+        Q(type_income = 'OUT') & (
+            Q(salegame__isnull=False) | Q(salepulsa__isnull=False) | Q(salelistrik__isnull=False) | Q(saletransport__isnull=False)
+        )
     )
 
     # VALIDATION ROLE USER
@@ -133,6 +135,11 @@ def saleListView(request):
     }
     data['html'] = render_to_string(
         'sale/includes/partial-data-sale.html',
+        content,
+        request=request
+    )
+    data['mobile_html'] = render_to_string(
+        'sale/includes/partial-data-sale-mobile.html',
         content,
         request=request
     )

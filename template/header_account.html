@@ -2,13 +2,19 @@
 
 <div class="ui top fixed small pointing menu">
     <div class="ui fluid container">
+        <a href="#" class="item bars">
+            <i class="bars icon"></i>
+        </a>
+        <div class="item header">
+            WARUNGID
+        </div>
         <div class="right menu">
-            <a href="#" class="item">
+            <!-- <a href="#" class="item">
                 Support
             </a>
             <a href="#" class="item">
                 Documentations
-            </a>
+            </a> -->
             {% if user.is_authenticated %}
             <div class="ui dropdown link item">
                 <span class="text">{{ user.email }}</span>

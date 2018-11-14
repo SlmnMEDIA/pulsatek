@@ -1,51 +1,94 @@
 {% load humanize %}
 
-<table class="ui small fixed table">
-    <thead>
-        <tr>
-            <th>Username</th>
-            {% if user.is_superuser %}
-                <th>Type</th>
-            {% endif %}
-            <th>Trx Count</th>
-            <th>Saldo</th>
-            <th>Limit</th>
-            <th>Media</th>
-            <th>Join Date</th>
-            <th>#</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-    {% for member in members %}
-        <tr>
-            <td>
-                <strong title="{{ member }}">{{ member.full_name|title }}</strong>
-                {% if user.is_superuser %}
-                    <br>
-                    <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
-                {% endif %}
-            </td>
-            {% if user.is_superuser %}
-                <td>{% if member.is_agen %}Agen{% endif %}</td>
-            {% endif %}
-            <td>{{ member.user_c }}</td>
-            <td>{{ member.saldo|intcomma }}</td>
-            <td>{{ member.limit|intcomma }}</td>
-            <td>
-                <i class="user icon {% if member.is_active %} green {% endif %}"></i>
-                <i class="telegram icon {% if member.telegram %} blue {% endif %}"></i>
-            </td>
-            <td>{{ member.date_joined|date:"M d, Y"}}</td>
-            <td>
-                <!-- <a title="Edit" href="#"><i class="edit icon"></i></a> -->
-                <a class="js-btn-limit" target-url="{% url 'core:user-limit' member.id %}" href="#">
-                    <i class="pencil icon"></i>
-                    Limit
-                </a>
-                <!-- <a class="js-user-detail" href="#" target-url="{% url 'core:user-detail' member.id %}"> <i class="eye icon"></i> View</a> -->
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="ui grid">
+    <div class="row">
+        <div class="sixteen wide column">
+            <form action="{% url 'core:member' %}" class="ui small js-search-form">
+                <div class="ui action fluid input">
+                    <input type="text" placeholder="Search" name="search">
+                    <button type="submit" class="ui icon button">
+                        <i class="search icon"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mobile only">
+        <div class="sixteen wide column">
+            <div class="ui divided selection small list">
+                {% for member in members %}
+                <div class="item js-btn-limit" target-url="{% url 'core:user-limit' member.id %}">
+                    <div class="right floated content">
+                        <div class="ui basic small label">
+                            IDR {{ member.saldo|floatformat:"0"|intcomma }} <br>
+                            <small>Limit. IDR {{ member.limit|floatformat:"0"|intcomma }}</small>
+                        </div>
+                    </div>
+                    <img class="ui avatar image" src="https://semantic-ui.com/images/avatar2/small/rachel.png" alt="">
+                    <div class="content">
+                        <a class="header">
+                            {{ member.full_name|title }}
+                        </a>
+                        <div class="description">
+                            <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row computer only">
+        <div class="sixteen wide column">
+            <table class="ui small fixed table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        {% if user.is_superuser %}
+                            <th>Type</th>
+                        {% endif %}
+                        <th>Trx Count</th>
+                        <th>Saldo</th>
+                        <th>Limit</th>
+                        <th>Media</th>
+                        <th>Join Date</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                {% for member in members %}
+                    <tr>
+                        <td>
+                            <strong title="{{ member }}">{{ member.full_name|title }}</strong>
+                            {% if user.is_superuser %}
+                                <br>
+                                <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
+                            {% endif %}
+                        </td>
+                        {% if user.is_superuser %}
+                            <td>{% if member.is_agen %}Agen{% endif %}</td>
+                        {% endif %}
+                        <td>{{ member.user_c }}</td>
+                        <td>{{ member.saldo|intcomma }}</td>
+                        <td>{{ member.limit|intcomma }}</td>
+                        <td>
+                            <i class="user icon {% if member.is_active %} green {% endif %}"></i>
+                            <i class="telegram icon {% if member.telegram %} blue {% endif %}"></i>
+                        </td>
+                        <td>{{ member.date_joined|date:"M d, Y"}}</td>
+                        <td>
+                            <!-- <a title="Edit" href="#"><i class="edit icon"></i></a> -->
+                            <a class="js-btn-limit" target-url="{% url 'core:user-limit' member.id %}" href="#">
+                                <i class="pencil icon"></i>
+                                Limit
+                            </a>
+                            <!-- <a class="js-user-detail" href="#" target-url="{% url 'core:user-detail' member.id %}"> <i class="eye icon"></i> View</a> -->
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

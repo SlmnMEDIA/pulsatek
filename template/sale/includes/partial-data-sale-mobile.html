@@ -1,0 +1,26 @@
+{% load humanize %}
+
+{% for sale in sales %}
+    <div class="item" style="font-size:0.8rem">
+        <div class="content">
+            <div class="ui header">
+                {{ sale.trx_obj }}
+            </div>
+            <div class="meta">
+                <span class="ui empty circular {% if sale.success %} green {% else %} red {% endif %} label"></span> {{ sale.trx_obj.get_trx_status.get_status_display }}
+            </div>
+            <div class="description right aligned">
+                PEMBELIAN {{ sale.trx_obj.product.product_name }} PADA NO. {{ sale.trx_obj.customer }}
+            </div>
+            <div class="extra">
+                <span>IDR {{ sale.credit|intcomma }} </span> <span>{{ sale.timestamp|date:"M d, Y" }} {{ sale.timestamp|date:"H:i" }} WIB</span>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="item">
+        <div class="content">
+            Data not found.
+        </div>
+    </div>
+{% endfor %}

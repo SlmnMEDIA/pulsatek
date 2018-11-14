@@ -14,7 +14,7 @@ from core.forms import InvitationForm
 # INDEX / DASHBOARD VIEW
 @login_required(login_url='/login/')
 def indexView(request):
-    return redirect('account:cart')
+    return redirect('account:sale')
     # return render(request, 'account/index_v2.html')
 
 

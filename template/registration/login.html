@@ -7,61 +7,57 @@ Login Warungid
 {% endblock %}
 
 {% block content %}
-<div class="ui text container">
-    <div class="ui stackable middle aligned centered grid" style="min-height:500px">
-        <div class="nine wide column">
-            <div class="ui padded segment" style="background-color:rgba(255,255,255,.5)">
-                <div class="ui basic center aligned segment">
-                    <a href="{% url 'home' %}" class="ui small image">
-                        <img src="{% static 'logo/logowarungid3.png' %}" alt="" class="">
-                    </a>
-                </div>
-                <form action="" class="ui inverted large form" method="post">
-                    {% csrf_token %}
-                    <div class="field">
-                        <label for="{{ form.username.id_for_label }}">Email Address</label>
-                        <div class="ui left icon input">
-                            {% render_field form.username placeholder="example@mail.com" %}
-                            <i class="user icon"></i>
-                        </div>
-                        {% if form.username.errors %}
-                            {% for error in form.username.errors %}
-                            <small style="color:brown">{{ error }}</small>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="field">
-                        <label for="{{ form.password.id_for_label }}">Password</label>
-                        <div class="ui left icon input">
-                            {% render_field form.password %}
-                            <i class="key icon"></i>
-                        </div>
-                        {% if form.password.errors %}
-                            {% for error in form.password.errors %}
-                            <small style="color:brown">{{ error }}</small>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    {% if form.non_field_errors %}
-                        <div class="ui red message">
-                            <div class="ui small list">
-                                {% for error in form.non_field_errors %}
-                                    <div class="item">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    <div class="field">
-                        <button type="submit" class="ui primary fluid large button">Login</button>
-                    </div>
-                    <div class="field">
-                        <p>
-                            <small>Don't have account? <a href="{% url 'signup' %}" class="ui link">Register</a></small>
-                            <small> or <a href="{% url 'password_reset' %}">Forgot Password</a></small>
-                        </p>
-                    </div>
-                </form>
+<div class="row">
+    <div class="five wide column">
+        <div class="ui padded segment" style="background-color:rgba(255,255,255,.5)">
+            <div class="ui basic center aligned segment">
+                <a href="{% url 'home' %}" class="ui small image">
+                    <img src="{% static 'logo/logowarungid3.png' %}" alt="" class="">
+                </a>
             </div>
+            <form action="" class="ui inverted large form" method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="{{ form.username.id_for_label }}">Email Address</label>
+                    <div class="ui left icon input">
+                        {% render_field form.username placeholder="example@mail.com" %}
+                        <i class="user icon"></i>
+                    </div>
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                        <small style="color:brown">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="field">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    <div class="ui left icon input">
+                        {% render_field form.password %}
+                        <i class="key icon"></i>
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                        <small style="color:brown">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if form.non_field_errors %}
+                    <div class="ui red message">
+                        <div class="ui small list">
+                            {% for error in form.non_field_errors %}
+                                <div class="item">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="field">
+                    <button type="submit" class="ui primary fluid large button">Login</button>
+                </div>
+                <div class="ui divider"></div>
+                <div class="field">
+                    <a class="ui orange fluid large button" href="{% url 'password_reset' %}">Reset Password</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

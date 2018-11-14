@@ -8,7 +8,7 @@ Member
 
 {% block content %}
     <div class="ui stackable grid">
-        <div class="row">
+        <div class="row computer only">
             <div class="column">
                 <div class="ui segment">
                     <div class="ui header">
@@ -59,14 +59,12 @@ Member
         </div>
         <div class="row">
             <div class="column">
-                <h4>Management Account</h4>
-
                 <div id="tabmember" class="ui tabular top attached menu">
                     <a href="#" class="item active" data-tab="allmember">
-                        All Members
+                        Members
                     </a>
                     <a href="#" class="item" data-tab="agen">
-                        Agen Executive
+                        Agen
                     </a>
                     {% if user.is_superuser %}
                     <a href="#" class="item" data-tab="message">
@@ -173,6 +171,20 @@ Member
             return false;
         }
 
+
+        var search_user = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    $('#users-tbl').html(data.html);
+                }
+            });
+            return false;
+        }
+
         function initdata() {
             var t = $('#users-tbl')
             $.ajax({
@@ -186,6 +198,8 @@ Member
             return false;
         }
 
+
+
         initdata();
 
         $('#users-tbl').on('click', '.js-btn-limit', loadmodalView);
@@ -195,6 +209,8 @@ Member
         $('#modal1').on('submit', '.js-add-cash', postForm);
 
         $('#modal1').on('submit', '.js-message-form', postMessage);
+
+        $('#users-tbl').on('submit', '.js-search-form', search_user);
     });
 </script>
 {% endblock %}

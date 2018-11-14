@@ -20,6 +20,8 @@ User_class = get_user_model()
 
 # SIGNUP VIEW
 def signupViews(request):
+    return redirect('page:no_signup')
+    
     ref = request.GET.get('r', None)
     try :
         invit_obj = Invitation.objects.get(code=ref, closed=False)
@@ -84,7 +86,7 @@ def userListView(request):
 
     q = request.GET.get('search', None)
     if q :
-        user_objs = user_objs.filter(email__contains=q)
+        user_objs = user_objs.filter(Q(email__contains=q) | Q(first_name__contains=q) | Q(last_name__contains=q))
 
     content = {
         'members': user_objs

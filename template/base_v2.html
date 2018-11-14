@@ -21,95 +21,146 @@
         {% endblock %}
     </head>
     <body>
-        {% include 'header_account.html' %}
+        <div class="ui inverted sidebar visible vertical labeled icon menu">
+            <div class="item">WARUNGID</div>
+            <a href="{% url 'account:index' %}" class="item">
+                <i class="clipboard icon"></i>
+                Dashboard
+            </a>
+            {% if user.is_superuser %}
+            <a href="{% url 'account:cart' %}" class="item">
+                <i class="chart pie icon"></i>
+                Chart
+            </a>
+            {% endif %}
+            {% if user.is_superuser or user.is_agen %}
+            <a href="{% url 'account:member' %}" class="item">
+                <i class="sitemap icon"></i>
+                Manage
+            </a>
+            <a href="{% url 'account:payment' %}" class="item">
+                <i class="qrcode icon"></i>
+                Payment
+            </a>
+            {% endif %}
+            <a href="{% url 'account:sale' %}" class="item">
+                <i class="dollar sign icon"></i>
+                Sale
+            </a>
+        </div>
+        <div class="dimmed pusher">
+            {% include 'header_account.html' %}
 
-        <div class="ui vertical segment" style="margin-top: 30px">
-            <div class="ui fluid container">
-                <div class="ui stackable padded grid">
-                    <div class="three wide column">
-                        <div class="ui vertical secondary large fluid menu">
-                            <div class="item">
-                                <img src="{{ user.get_avatar }}" alt="" class="ui circular medium image">
-                                <div class="ui small teal centered header">
-                                    {{ user }}
-                                    <div class="sub header">
-                                        {% if user.is_superuser %}
-                                        Admin
-                                        {% elif user.is_staff %}
-                                        Staff
-                                        {% elif user.is_agen %}
-                                        Executive Agen
-                                        {% else %}
-                                        Member
+            <div class="ui vertical segment" style="margin-top: 30px">
+                <div class="ui fluid container">
+                    <div class="ui stackable padded grid">
+                        <div class="row mobile only">
+                            <div class="sixteen wide column">
+                                <div class="ui horizontal segments">
+                                    <div class="ui orange segment">
+                                        <div class="ui mini orange statistic">
+                                            <div class="label">Saldo</div>
+                                            <div class="value">{{ user.saldo|intcomma }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="ui teal segment">
+                                        <div class="ui mini teal profit statistic">
+                                            <div class="label">Profit</div>
+                                            <div class="value">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="three wide computer only column">
+                                <div class="ui vertical secondary large fluid menu">
+                                    <div class="item">
+                                        <img src="{{ user.get_avatar }}" alt="" class="ui circular medium image">
+                                        <div class="ui small teal centered header">
+                                            {{ user }}
+                                            <div class="sub header">
+                                                {% if user.is_superuser %}
+                                                Admin
+                                                {% elif user.is_staff %}
+                                                Staff
+                                                {% elif user.is_agen %}
+                                                Executive Agen
+                                                {% else %}
+                                                Member
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="ui center aligned vertical segment">
+                                            <div class="ui tiny statistic">
+                                                <div class="label">
+                                                    Saldo
+                                                </div>
+                                                <div class="value">
+                                                    {{ user.saldo|intcomma }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% if user.is_superuser or user.is_agen %}
+                                            <div class="ui center aligned vertical segment">
+                                                <div class="ui tiny orange profit statistic">
+                                                    <div class="label">
+                                                        profit
+                                                    </div>
+                                                    <div class="value">
+                                                        0
+                                                    </div>
+                                                </div>
+                                            </div>
                                         {% endif %}
                                     </div>
+                                    <a href="{% url 'account:index' %}" class="item dashboard">
+                                        Dashboard
+                                        <i class="home icon"></i>
+                                    </a>
+                                    {% if user.is_superuser %}
+                                    <a href="{% url 'account:cart' %}" class="item chart">
+                                        Chart
+                                        <i class="chart line icon"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if user.is_agen or user.is_superuser %}
+                                    <a href="{% url 'account:member' %}" class="item member">
+                                        Management
+                                        <i class="users icon"></i>
+                                    </a>
+                                    <a href="{% url 'account:payment' %}" class="item member">
+                                        Payment
+                                        <i class="money icon"></i>
+                                    </a>
+                                    {% endif %}
+                                    <!-- <a href="{% url 'account:product' %}" class="item product">
+                                        Product
+                                        <i class="book icon"></i>
+                                    </a> -->
+                                    <a href="{% url 'account:sale' %}" class="item sale">
+                                        Sale
+                                        <i class="dolly icon"></i>
+                                    </a>
+                                    <!-- <a href="#" class="item wallet">
+                                        Wallet
+                                        <i class="wallet icon"></i>
+                                    </a> -->
                                 </div>
-                                <div class="ui center aligned vertical segment">
-                                    <div class="ui tiny statistic">
-                                        <div class="label">
-                                            Saldo
-                                        </div>
-                                        <div class="value">
-                                            {{ user.saldo|intcomma }}
-                                        </div>
-                                    </div>
-                                </div>
-                                {% if user.is_superuser or user.is_agen %}
-                                    <div class="ui center aligned vertical segment">
-                                        <div id="profit" class="ui tiny orange statistic">
-                                            <div class="label">
-                                                profit
-                                            </div>
-                                            <div class="value">
-                                                {{ user.saldo|intcomma }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
                             </div>
-                            <a href="{% url 'account:index' %}" class="item dashboard">
-                                Dashboard
-                                <i class="home icon"></i>
-                            </a>
-                            {% if user.is_superuser %}
-                            <a href="{% url 'account:cart' %}" class="item chart">
-                                Chart
-                                <i class="chart line icon"></i>
-                            </a>
-                            {% endif %}
-                            {% if user.is_agen or user.is_superuser %}
-                            <a href="{% url 'account:member' %}" class="item member">
-                                Management
-                                <i class="users icon"></i>
-                            </a>
-                            <a href="{% url 'account:payment' %}" class="item member">
-                                Payment
-                                <i class="money icon"></i>
-                            </a>
-                            {% endif %}
-                            <!-- <a href="{% url 'account:product' %}" class="item product">
-                                Product
-                                <i class="book icon"></i>
-                            </a> -->
-                            <a href="{% url 'account:sale' %}" class="item sale">
-                                Sale
-                                <i class="dolly icon"></i>
-                            </a>
-                            <!-- <a href="#" class="item wallet">
-                                Wallet
-                                <i class="wallet icon"></i>
-                            </a> -->
+                            <div class="thirteen wide column">
+                                {% block content %}
+                                {% endblock %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="thirteen wide column">
-                        {% block content %}
-                        {% endblock %}
                     </div>
                 </div>
             </div>
+            {% include 'footer.html' %}
         </div>
+        
 
-        {% include 'footer.html' %}
+        
 
         <div id="modal1" class="ui small modal">
             <!-- modal content -->
@@ -124,7 +175,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="{% static 'semantic/semantic.min.js' %}"></script>
         <script src="{% static 'ui-calendar/calendar.min.js' %}"></script>
-        <script src="{% static 'main/main_v2.js' %}"></script>
+        <script src="{% static 'main/main.js' %}"></script>
+        
         {% block js %}
         {% endblock %}
     </body>

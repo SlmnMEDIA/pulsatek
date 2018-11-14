@@ -6,12 +6,12 @@ Sale Out
 {% endblock %}
 
 {% block content %}
-<div class="ui stackable grid">
+<div class="ui equal width stackable grid">
     <div class="row">
         <div class="column">
             <form action="{% url 'sale:sale_list' %}" class="ui form js-search-sale">
-                <div class="five wide field">
-                    <div class="ui action input">
+                <div class="six wide field">
+                    <div class="ui small action input">
                         <input type="text" name="search" placeholder="Search">
                         <button type="submit" class="ui icon button">
                             <i class="search icon"></i>
@@ -21,9 +21,9 @@ Sale Out
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="column">
-            <table id="sale-tbl" class="ui small fixed table" data-ng-url="{% url 'sale:sale_list' %}">
+    <div id="sale-tbl" class="row" data-ng-url="{% url 'sale:sale_list' %}">
+        <div class="column computer only">
+            <table class="ui small fixed table">
                 <thead>
                     <tr>
                         <th>Transaction ID</th>
@@ -40,6 +40,11 @@ Sale Out
                 </tbody>
             </table>
         </div>
+        <div class="column mobile only">
+            <div class="ui divided items">
+                <!-- TRX MOBILE CONTENT -->
+            </div>
+        </div>
     </div>
     <div class="row">
         <div id="pageid" class="column">
@@ -47,49 +52,51 @@ Sale Out
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
 <script>
 $(document).ready(function() {
     var item = $('#sale-tbl');
+    $.ajax({
+        url: item.attr('data-ng-url'),
+        dataType: 'json',
+        success: function(data) {
+            $('#sale-tbl table tbody').html(data.html);
+            $('#sale-tbl .ui.items').html(data.mobile_html);
+            $('#pageid').html(data.html_page);
+        }
+    });
+    
+    var searchPost = function() {
+        var form = $(this);
         $.ajax({
-            url: item.attr('data-ng-url'),
+            url: form.attr('action'),
             dataType: 'json',
+            data: form.serialize(),
             success: function(data) {
-                $('#sale-tbl tbody').html(data.html);
+                $('#sale-tbl table tbody').html(data.html);
+                $('#sale-tbl .ui.items').html(data.mobile_html);
                 $('#pageid').html(data.html_page);
             }
         });
-        
-        var searchPost = function() {
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                dataType: 'json',
-                data: form.serialize(),
-                success: function(data) {
-                    $('#sale-tbl tbody').html(data.html);
-                    $('#pageid').html(data.html_page);
-                }
-            });
-            return false;
-        }
+        return false;
+    }
 
-        var pageClick = function() {
-            var btn = $(this);
-            $.ajax({
-                url: btn.attr('target-url'),
-                dataType: 'json',
-                success: function(data) {
-                    $('#sale-tbl tbody').html(data.html);
-                }
-            });
-        }
+    var pageClick = function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            success: function(data) {
+                $('#sale-tbl table tbody').html(data.html);
+                $('#sale-tbl .ui.items').html(data.mobile_html);
+            }
+        });
+    }
 
-        $('.js-search-sale').on('submit', searchPost);
-        $('#pageid').on('click', '.js-page-btn', pageClick);
+    $('.js-search-sale').on('submit', searchPost);
+    $('#pageid').on('click', '.js-page-btn', pageClick);
 });
 </script>
 {% endblock %}
