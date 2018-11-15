@@ -126,7 +126,7 @@
                                     {% endif %}
                                     {% if user.is_agen or user.is_superuser %}
                                     <a href="{% url 'account:member' %}" class="item member">
-                                        Management
+                                        Manage
                                         <i class="users icon"></i>
                                     </a>
                                     <a href="{% url 'account:payment' %}" class="item member">
@@ -134,18 +134,10 @@
                                         <i class="money icon"></i>
                                     </a>
                                     {% endif %}
-                                    <!-- <a href="{% url 'account:product' %}" class="item product">
-                                        Product
-                                        <i class="book icon"></i>
-                                    </a> -->
                                     <a href="{% url 'account:sale' %}" class="item sale">
                                         Sale
                                         <i class="dolly icon"></i>
                                     </a>
-                                    <!-- <a href="#" class="item wallet">
-                                        Wallet
-                                        <i class="wallet icon"></i>
-                                    </a> -->
                                 </div>
                             </div>
                             <div class="thirteen wide column">

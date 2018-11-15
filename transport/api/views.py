@@ -89,7 +89,7 @@ class TransactionCreatePost(APIView):
 
         request.data['product'] = product_obj.id
 
-        trx = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date=date.today(), record__success=True)
+        trx = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date=date.today(), record__success=True, record__debit=0)
         if trx.exists():
             status_obj = StatusTransaction.objects.get(code='20')
             output['status'] = StatusTrx(status_obj).data

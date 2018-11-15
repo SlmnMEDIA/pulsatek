@@ -9,11 +9,13 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.crypto import get_random_string
 
 
 import requests
+from string import ascii_letters
 
-from .forms import SignUpForm, LimitUserForm, InvitationForm, MessagePostForm
+from .forms import SignUpForm, LimitUserForm, InvitationForm, MessagePostForm, AddUserFrom
 from .decorators import user_is_agen_or_staff, user_is_referal_agen, user_is_staff_only
 from .models import Invitation, MessagePost
 from sale.models import Sale
@@ -71,6 +73,41 @@ def signupViews(request):
     }
     return render(request, 'core/signup.html', content)
 
+
+@login_required(login_url='/login/')
+@user_is_agen_or_staff
+def addMemberView(request):
+    data = dict()
+    form = AddUserFrom(request.POST or None)
+    if request.method == 'POST':
+        print(form.is_valid())
+        if form.is_valid():
+            rand_pass = get_random_string(14)
+            instance = form.save(commit=False)
+            instance.leader = request.user
+            instance.password1 = rand_pass
+            instance.password2 = rand_pass
+            instance.save()
+            
+            data['html_data'] = render_to_string(
+                'core/includes/partia-user-created-view.html',
+                {'new_member': instance},
+                request = request
+            )
+            data['form_is_valid'] = True
+        else :
+            data['form_is_valid'] = False
+        # print(form)
+    content = {
+        'form': form
+    }
+
+    data['html'] = render_to_string(
+        'core/includes/partial-create-member-view.html',
+        content,
+        request = request
+    )
+    return JsonResponse(data)
 
 # USER LIST
 # OK

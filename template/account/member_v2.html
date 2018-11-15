@@ -10,7 +10,10 @@ Member
     <div class="ui stackable grid">
         <div class="row computer only">
             <div class="column">
-                <div class="ui segment">
+
+
+
+                <!-- <div class="ui segment">
                     <div class="ui header">
                         Invitation Member
                     </div>
@@ -38,15 +41,19 @@ Member
                             {% endfor %}
                         </div>
                    {% endif %}
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="row">
             <div class="column">
                 <div id="tabmenu" class="ui labeled icon menu">
-                    <a href="#" target-url="{% url 'sale:add_cash' %}" class="teal item active">
+                    <a href="#" target-url="{% url 'sale:add_cash' %}" class="item">
                         <i class="add icon"></i>
-                        Add Saldo
+                        Topup
+                    </a>
+                    <a href="#" class="item" target-url="{% url 'core:create_member' %}">
+                        <i class="users icon"></i>
+                        Add Member
                     </a>
                     {% if user.is_superuser %}
                         <a href="#" target-url="{% url 'core:message_post' %}" class="orange item">
@@ -185,6 +192,25 @@ Member
             return false;
         }
 
+        var post_newuser = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function(data) {
+                    if(data.form_is_valid) {
+                        // $('#modal1').modal('hide');
+                        $('#modal1').html(data.html_data);
+                    } else {
+                        $('#modal1').html(data.html);
+                    }
+                }
+            });
+            return false;
+        }
+
         function initdata() {
             var t = $('#users-tbl')
             $.ajax({
@@ -211,6 +237,8 @@ Member
         $('#modal1').on('submit', '.js-message-form', postMessage);
 
         $('#users-tbl').on('submit', '.js-search-form', search_user);
+
+        $('#modal1').on('submit', '.js-post-form', post_newuser);
     });
 </script>
 {% endblock %}

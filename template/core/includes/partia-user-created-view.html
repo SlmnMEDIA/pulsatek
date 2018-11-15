@@ -1,0 +1,19 @@
+<div class="header">
+    Success Created Member 
+</div>
+<div class="content">
+    <p>Hai {{ user.full_name|title }}, <br>
+        Anda telah mendaftarkan member <strong>{{ new_member.fill_name|title }}</strong> dengan email <a>{{ new_member.email }}</a>.
+        PIN member Anda adalah <span class="ui label orange">{{ new_member.pin }}</span> 
+    </p>
+    <p>
+        Silahkan kunjungi bot telegram warungid <a href="http://t.me/warungid_bot">@warungid_bot</a> untuk aktivasi dengan mengetikan <span class="ui teal label">#token[PIN]</span>. 
+    </p>
+    <p>
+        Salam, <br>
+        <i>Warungid.com</i>
+    </p>
+</div>
+<div class="actions">
+    <button class="ui approve positive button">Ok, Saya Mengerti</button>
+</div>

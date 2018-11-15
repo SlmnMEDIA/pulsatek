@@ -1,13 +1,13 @@
 {% load static %}
 
-<div class="ui top fixed small pointing menu">
+<div class="ui top fixed menu">
     <div class="ui fluid container">
         <a href="#" class="item bars">
             <i class="bars icon"></i>
         </a>
-        <div class="item header">
+        <a href="{% url 'account:index' %}" class="item active header">
             WARUNGID
-        </div>
+        </a>
         <div class="right menu">
             <!-- <a href="#" class="item">
                 Support

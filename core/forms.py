@@ -5,6 +5,28 @@ from django.utils import timezone
 
 from .models import Invitation, MessagePost, User
 
+class AddUserFrom(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = get_user_model()
+        fields = [
+            'email', 'first_name', 'last_name', 'password1', 'password2'
+        ]
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        return email.lower()
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if first_name is None or first_name == '':
+            raise forms.ValidationError('User must be has a name.')
+        return first_name.lower()
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        return last_name.lower()
+        
+
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
