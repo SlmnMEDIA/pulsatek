@@ -224,11 +224,23 @@ def cashListView(request):
 
     q = request.GET.get('search', None)
     if q:
-        cash_objs = cash_objs.filter(nominal=q)
+        cash_objs = cash_objs.filter(
+            nominal=q
+        )
 
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cash_objs, 20)
+    try :
+        payment_list = paginator.page(page)
+    except PageNotAnInteger:
+        payment_list = paginator.page(1)
+    except EmptyPage:
+        payment_list = paginator.page(paginator.num_pages)
+        
     content = {
-        'cashs': cash_objs
+        'cashs': payment_list
     }
+
     data['html'] = render_to_string(
         'sale/includes/partial-cash-list.html',
         content,
@@ -276,10 +288,20 @@ def paymentListView(request):
     
     q = request.GET.get('search', None)
     if q:
-        payment_objs = payment_objs.filter(nominal=q)
+        payment_objs = payment_objs.filter(
+            Q(user__first_name__contains=q) | Q(user__email__contains=q)
+        )
+    page = request.GET.get('page', 1)
+    paginator = Paginator(payment_objs, 20)
+    try :
+        payment_list = paginator.page(page)
+    except PageNotAnInteger:
+        payment_list = paginator.page(1)
+    except EmptyPage:
+        payment_list = paginator.page(paginator.num_pages)
 
     content = {
-        'payments': payment_objs
+        'payments': payment_list
     }
 
     data['html'] = render_to_string(

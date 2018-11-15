@@ -27,11 +27,17 @@
                     <img class="ui avatar image" src="https://semantic-ui.com/images/avatar2/small/rachel.png" alt="">
                     <div class="content">
                         <a class="header">
-                            {{ member.full_name|title }}
+                            {{ member.full_name|title|truncatechars:15 }}
                         </a>
                         <div class="description">
                             <small>Member of <u>{% if member.leader == member %} Self {% else %}{{ member.leader.first_name|title }}{% endif %}</u></small>
                         </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="ui item">
+                    <div class="content">
+                        Member not found.
                     </div>
                 </div>
                 {% endfor %}
@@ -89,6 +95,22 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="sixteen wide column">
+            <div class="ui small pagination menu">
+                {% if members.has_previous %}
+                <a href="#" class="item">Prev</a>
+                {% else %}
+                <div class="item disabled">&laquo;</div>
+                {% endif %}
+                {% if members.has_next %}
+                <a href="#" class="item">Next</a>
+                {% else %}
+                <div class="item disabled">&raquo;</div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

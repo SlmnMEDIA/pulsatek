@@ -9,13 +9,10 @@
 <div class="ui stackable grid">
     <div class="row">
         <div class="column">
-            <h3 class="ui header">
-                Payment / Pembayaran
-            </h3>
             <div class="ui top attached tabular teal menu">
                 {% if user.is_superuser %}
                     <a href="#" class="item active" data-tab='payment'>
-                        Validated Payment
+                        Payment
                     </a>
                 {% endif %}
                 <a href="#" class="item {% if not user.is_superuser %}active{% endif %}" data-tab='cash_pay'>

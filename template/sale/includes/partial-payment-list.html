@@ -1,35 +1,80 @@
-<form action="{% url 'sale:payment_list' %}" class="ui form js-search">
-    <div class="five wide field">
-        <div class="ui input action">
-            <input type="text" placeholder="Search" name="search">
-            <button type="submit" class="ui button">Search</button>
+{% load humanize %}
+<div class="ui stackable grid">
+    <div class="row">
+        <div class="five wide column">
+            <form action="{% url 'sale:payment_list' %}" class="ui form js-search">
+                <div class="field">
+                    <div class="ui input action">
+                        <input type="text" placeholder="Search" name="search">
+                        <button type="submit" class="ui icon button">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</form>
+    <div class="row mobile only">
+        <div class="column">
+            <div class="ui small divided selection list">
+                {% for pay in payments %}
+                <div class="ui item">
+                    <div class="content right floated">
+                        <div class="description" style="text-align:right">
+                            <small>Validated by {{ pay.cash.validateby.first_name|title|default:'-'}}</small> <br>
+                            <small>on {{ pay.timestamp|date:"d/m/y H:i" }}</small>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <a class="header">
+                            {% if pay.cash %}Cash{% else %}Trasnfer{% endif %} Pay IDR {{ pay.nominal|intcomma }}
+                        </a>
+                        <div class="description">
+                            <small>
+                                {{ pay.user }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="ui item">
+                    <div class="content">
+                        Payment not found.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row computer only">
+        <div class="column">
+            <table class="ui small table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Nominal</th>
+                        <th>Validate By</th>
+                        <th>Type Payment</th>
+                        <th>Confirm Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pay in payments %}
+                    <tr>
+                        <td>{{ pay.user }}</td>
+                        <td>{{ pay.nominal }}</td>
+                        <td>{{ pay.cash.validateby|default:'-'}}</td>
+                        <td>{% if pay.cash %}Cash{% else %}Trasnfer{% endif %}</td>
+                        <td>{{ pay.timestamp }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No data found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<table class="ui small table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Nominal</th>
-            <th>Validate By</th>
-            <th>Type Payment</th>
-            <th>Confirm Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for pay in payments %}
-        <tr>
-            <td>{{ pay.user }}</td>
-            <td>{{ pay.nominal }}</td>
-            <td>{{ pay.cash.validateby|default:'-'}}</td>
-            <td>{% if pay.cash %}Cash{% else %}Trasnfer{% endif %}</td>
-            <td>{{ pay.timestamp }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No data found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>

@@ -1,28 +1,60 @@
 {% load humanize %}
 <div class="ui stackable equal width grid">
     <div class="row">
-        <div class="column">
-            <form action="{% url 'sale:cash_list' %}" class="ui form js-search">
-                <div class="field">
-                    <div class="ui input action">
-                        <input type="text" placeholder="Search" name="search">
-                        <button type="submit" class="ui button">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
         <div class="right aligned column">
-            <div class="ui mini orange statistic">
-                <div class="value">
-                    {{ request.user.undeliver_cash|intcomma }}
-                </div>
-                <div class="label">
-                    unreport cash
+            <div class="ui orange segment">
+                <div class="ui mini orange icon statistic">
+                    <div class="label">
+                        unreport cash
+                    </div>
+                    <div class="value">
+                        {{ request.user.undeliver_cash|intcomma }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
+        <div class="five wide column">
+            <form action="{% url 'sale:cash_list' %}" class="ui form js-search">
+                <div class="field">
+                    <div class="ui input action">
+                        <input type="text" placeholder="Search" name="search">
+                        <button type="submit" class="ui icon button">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mobile only">
+        <div class="column">
+            <div class="ui divided selection list">
+                {% for cash in cashs %}
+                <div class="ui item">
+                    <div class="content right floated">
+                        <div class="description" style="text-align:right">
+                            <small>{% if cash.validated %}Validated by {{ cash.validateby.first_name|title }}{% else %}Waiting Validation{% endif %}</small> <br>
+                            <small>on {{ cash.timestamp|date:"d/m/y H:i"}}</small> <br>
+                            <small class="ui empty circular {% if cash.delivered %} green {% else %} orange {% endif %} label"></small>                            
+                            <small>{% if cash.delivered %} <span style="color:green">Delivered</span> {% else %} <span style="color:orange">Still Keeping</span> {% endif %}</small> 
+                        </div>
+                    </div>
+                    <div class="content">
+                        <a class="header">
+                            Pay IDR {{ cash.nominal|intcomma }}
+                        </a>
+                        <div class="description">
+                            <small>{{ cash.user }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row computer only">
         <div class="column">
             <table class="ui small table">
                 <thead>

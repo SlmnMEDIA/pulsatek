@@ -70,6 +70,9 @@ class Payment(models.Model):
     noted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-timestamp']
+
 
 class Cash(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cashuser')
@@ -80,3 +83,6 @@ class Cash(models.Model):
     delivered = models.BooleanField(default=False)
     payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']

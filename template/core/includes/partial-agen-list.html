@@ -1,28 +1,64 @@
 {% load humanize %}
 
-<table class="ui small table">
-    <thead>
-        <tr>
-            <th>Agen Id</th>
-            <th>Full Name</th>
-            <th>Profit</th>
-            <th>Unreport Cash</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for agen in agens %}
-        <tr>
-            <td>{{ agen }}</td>
-            <td>{{ agen.full_name|title }}</td>
-            <td>{{ agen.v_profit|intcomma }}</td>
-            <td>{{ agen.undeliver_cash|intcomma }}</td>
-            <td></td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4">No data found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="ui grid">
+    <div class="row mobile only">
+        <div class="sixteen wide column">
+            <div class="ui divided selection small list">
+                {% for agen in agens %}
+                <div class="ui item">
+                    <img class="ui avatar image" src="https://semantic-ui.com/images/avatar2/small/rachel.png" alt="">
+                    <div class="content">
+                        <a class="header">
+                            {{ agen.full_name|title }}
+                        </a>
+                        <div class="description">
+                            <small>{{ agen }}</small>
+                        </div>
+                        <div class="extra" style="margin-top:5px">
+                            <i class="dollar sign icon"></i> IDR {{ agen.undeliver_cash|intcomma }}
+                            <i class="star outline icon"></i> IDR {{ agen.v_profit|intcomma }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="ui item">
+                    <div class="content">
+                        Agen not found
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row computer only">
+        <div class="sixteen wide column">
+            <table class="ui small table">
+                <thead>
+                    <tr>
+                        <th>Agen Id</th>
+                        <th>Full Name</th>
+                        <th>Profit</th>
+                        <th>Unreport Cash</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agen in agens %}
+                    <tr>
+                        <td>{{ agen }}</td>
+                        <td>{{ agen.full_name|title }}</td>
+                        <td>{{ agen.v_profit|intcomma }}</td>
+                        <td>{{ agen.undeliver_cash|intcomma }}</td>
+                        <td></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No data found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

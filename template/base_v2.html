@@ -59,8 +59,8 @@
                                 <div class="ui horizontal segments">
                                     <div class="ui orange segment">
                                         <div class="ui mini orange statistic">
-                                            <div class="label">Saldo</div>
-                                            <div class="value">{{ user.saldo|intcomma }}</div>
+                                            <div class="label">Saldos</div>
+                                            <div class="value">{{ user.saldo|floatformat:"0"|intcomma }}</div>
                                         </div>
                                     </div>
                                     <div class="ui teal segment">
@@ -97,7 +97,7 @@
                                                     Saldo
                                                 </div>
                                                 <div class="value">
-                                                    {{ user.saldo|intcomma }}
+                                                    {{ user.saldo|floatformat:"0"|intcomma }}
                                                 </div>
                                             </div>
                                         </div>

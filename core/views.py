@@ -8,6 +8,8 @@ from django.db.models.functions import Coalesce
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 import requests
 
@@ -88,8 +90,19 @@ def userListView(request):
     if q :
         user_objs = user_objs.filter(Q(email__contains=q) | Q(first_name__contains=q) | Q(last_name__contains=q))
 
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(user_objs, 15)
+    try :
+        user_list = paginator.page(page)
+    except PageNotAnInteger:
+        user_list = paginator.page(1)
+    except EmptyPage:
+        user_list = paginator.page(paginator.num_pages)
+
     content = {
-        'members': user_objs
+        'members': user_list
     }
 
     data['html'] = render_to_string(
