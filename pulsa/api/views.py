@@ -28,6 +28,11 @@ class OperatorListView(ListAPIView):
     ]
 
 
+class Operator_NoaListAPIView(ListAPIView):
+    queryset = Operator.objects.all()
+    serializer_class = OperatorListSerializer
+
+
 class OperatorDetailView(RetrieveAPIView):
     queryset = Operator.objects.all()
     serializer_class = OperatorDetailSerializer
@@ -49,6 +54,17 @@ class ProductListView(ListAPIView):
             query = query.filter(operator__id=operator)
 
         return query
+
+
+class Product_NoaListAPIView(ListAPIView):
+    serializer_class = ProductListSerializer
+
+    def get_queryset(self):
+        queryset = Product.onactive.all()
+        prefix = self.request.GET.get('prefix', None)
+        if prefix:
+            queryset = queryset.filter(operator__prefixnumber__prefix=prefix)
+        return queryset
 
 
 class ProductDetailView(RetrieveAPIView):
