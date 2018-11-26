@@ -4,6 +4,7 @@ from . import views
 
 app_name = 'api-pulsa'
 urlpatterns = [
+    path('prefix/', views.PrefixNumberListAPIView.as_view, name='prefix_list'),
     path('operator/', views.OperatorListView.as_view(), name='operator-list'),
     path('operator_v2/', views.Operator_NoaListAPIView.as_view(), name='operator_list2'),
     path('operator/<int:pk>/', views.OperatorDetailView.as_view(), name='operator-detail'),

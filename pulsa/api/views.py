@@ -7,7 +7,7 @@ from rest_framework import status
 from datetime import datetime, date
 
 
-from pulsa.models import Operator, Product, Transaction
+from pulsa.models import Operator, Product, Transaction, PrefixNumber
 from .serializers import (
     OperatorListSerializer,
     OperatorDetailSerializer,
@@ -15,10 +15,23 @@ from .serializers import (
     ProductDetailSerializer,
     TransactionSerializer,
     TransactionPostSerializer,
+    PrefixNumberSerializer
 )
 from core.api.serializers import StatusTransactionSrializer as StatusTrx
 from core.models import StatusTransaction
 
+
+class PrefixNumberListAPIView(ListAPIView):
+    serializer_class = PrefixNumberSerializer
+
+    def get_queryset(self):
+        new_queryset = PrefixNumber.objects.all()
+        opcode = self.request.GET.get('parse', None)
+        if opcode:
+            new_queryset = new_queryset.filter(
+                operator__parse=opcode
+            )
+        return new_queryset
 
 class OperatorListView(ListAPIView):
     queryset = Operator.onactive.all()

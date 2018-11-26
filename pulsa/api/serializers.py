@@ -3,7 +3,7 @@ from rest_framework.serializers import (
     ModelSerializer, 
     SerializerMethodField, HyperlinkedModelSerializer, HyperlinkedRelatedField)
 
-from pulsa.models import Operator, Product, Transaction
+from pulsa.models import Operator, Product, Transaction, PrefixNumber
 
 class OperatorListSerializer(ModelSerializer):
     class Meta:
@@ -68,3 +68,11 @@ class TransactionPostSerializer(ModelSerializer):
             return value
         except:
             raise serializers.ValidationError('Invalid phone number')
+
+
+class PrefixNumberSerializer(ModelSerializer):
+    class Meta:
+        model = PrefixNumber
+        fields = [
+            'id', 'prefix'
+        ]
