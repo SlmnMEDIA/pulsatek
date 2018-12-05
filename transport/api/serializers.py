@@ -2,6 +2,8 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from transport.models import Operator, Product, Transaction
 
+from core.api.serializers import UserSaldoSerializer
+
 class OperatorListSerializer(ModelSerializer):
     class Meta:
         model = Operator
@@ -50,6 +52,22 @@ class TransactionSerializer(ModelSerializer):
             'product',
         ]
 
+class TransactionResposneSerializer(ModelSerializer):
+    product = ProductDetailSerializer(read_only=True)
+    buyer = UserSaldoSerializer(read_only=True)
+    status = SerializerMethodField()
+    class Meta:
+        model = Transaction
+        fields = [
+            'id',
+            'trx_code', 'phone', 'product',
+            'timestamp', 'closed', 'buyer',
+            't_notive', 'status'
+        ]
+
+    def get_status(self, instance):
+        return instance.get_trx_status().status
+
 class TransactionPostSerializer(ModelSerializer):
     class Meta:
         model = Transaction
@@ -64,3 +82,11 @@ class TransactionPostSerializer(ModelSerializer):
             return value
         except:
             raise serializers.ValidationError('Invalid phone number')
+
+
+class TeleTrxStatusSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = [
+            't_notive'
+        ]

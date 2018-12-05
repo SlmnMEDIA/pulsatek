@@ -4,6 +4,7 @@ from rest_framework.serializers import (
     SerializerMethodField, HyperlinkedModelSerializer, HyperlinkedRelatedField)
 
 from pulsa.models import Operator, Product, Transaction, PrefixNumber
+from core.api.serializers import UserSaldoSerializer
 
 class OperatorListSerializer(ModelSerializer):
     class Meta:
@@ -53,6 +54,22 @@ class TransactionSerializer(ModelSerializer):
             'product',
         ]
 
+class TransactionResposneSerializer(ModelSerializer):
+    product = ProductDetailSerializer(read_only=True)
+    buyer = UserSaldoSerializer(read_only=True)
+    status = SerializerMethodField()
+    class Meta:
+        model = Transaction
+        fields = [
+            'id',
+            'trx_code', 'phone', 'product',
+            'timestamp', 'closed', 'buyer',
+            't_notive', 'status'
+        ]
+
+    def get_status(self, instance):
+        return instance.get_trx_status().status
+
 
 class TransactionPostSerializer(ModelSerializer):
     class Meta:
@@ -75,4 +92,11 @@ class PrefixNumberSerializer(ModelSerializer):
         model = PrefixNumber
         fields = [
             'id', 'prefix'
+        ]
+
+class TeleTrxStatusSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = [
+            't_notive'
         ]

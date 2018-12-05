@@ -92,8 +92,12 @@ class Transaction(models.Model):
     buyer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, default=1, related_name='buyergame')
     record = models.OneToOneField(Sale, on_delete=models.SET_NULL, null=True, blank=True, related_name='salegame')
     closed = models.BooleanField(default=False)
+    t_notive = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.trx_code

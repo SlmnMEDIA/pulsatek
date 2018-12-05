@@ -53,3 +53,31 @@ class MessageUpdateSerializer(ModelSerializer):
         fields = [
             'closed'
         ]
+
+class UserSaldoSerializer(ModelSerializer):
+    teleid = serializers.CharField(source='get_telegram', read_only=True)
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'saldo',
+            'limit',
+            'teleid',
+        ]
+
+class UserOnTeleSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'saldo',
+            'limit',
+        ]
+
+class TeleforUserSerializer(ModelSerializer):
+    user = UserOnTeleSerializer(read_only=True)
+    class Meta:
+        model = Telegram
+        fields = [
+            'user', 'telegram'
+        ]

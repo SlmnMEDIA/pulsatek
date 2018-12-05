@@ -1,8 +1,35 @@
 from celery import shared_task
 from django.conf import settings
-import requests, json
+import requests, json, re
 
 from .models import StatusTransaction, ResponseTrx
+
+@shared_task
+def pulsa_response_celery(id, payload):
+    rjson = dict()
+    responsetrx_obj = ResponseTrx.objects.get(pk=id)
+
+    urls = settings.RAJA_URLS
+
+    try:
+        r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
+        if r.status_code == requests.codes.ok :
+            rjson = r.json()
+        r.raise_for_status()
+    except :
+        pass
+
+    responsetrx_obj.kode_produk = rjson.get('KODE_PRODUK', '')
+    responsetrx_obj.waktu = rjson.get('WAKTU', '')
+    responsetrx_obj.no_hp = rjson.get('NO_HP', '')
+    responsetrx_obj.sn = rjson.get('SN', '')
+    responsetrx_obj.ref1 = rjson.get('REF1', '')
+    responsetrx_obj.ref2 = rjson.get('REF2', '')
+    responsetrx_obj.status = rjson.get('STATUS', '99')
+    responsetrx_obj.ket = rjson.get('KET', 'Gagal terhubung ke server / timeout')
+    responsetrx_obj.saldo_terpotong = int(rjson.get('SALDO_TERPOTONG', 0))
+    responsetrx_obj.sisa_saldo = int(rjson.get('SISA_SALDO', 0))
+    responsetrx_obj.save()
 
 
 @shared_task

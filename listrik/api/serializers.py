@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 
 from listrik.models import Operator, Product, Transaction, ResponseTrx
+from core.api.serializers import UserSaldoSerializer
 
 # class OperatorListSerializer(ModelSerializer):
 #     class Meta:
@@ -43,19 +44,34 @@ class ProductDetailSerializer(ModelSerializer):
     def get_addinfo(self, instance):
         return instance.add_info()
 
-# class TransactionSerializer(ModelSerializer):
-#     class Meta:
-#         model = Transaction
-#         fields = [
-#             'phone',
-#             'product',
-#         ]
+class TransactionSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = [
+            'phone',
+            'product',
+        ]
+
+class TransactionResposneSerializer(ModelSerializer):
+    product = ProductDetailSerializer(read_only=True)
+    buyer = UserSaldoSerializer(read_only=True)
+    status = SerializerMethodField()
+    class Meta:
+        model = Transaction
+        fields = [
+            'id',
+            'trx_code', 'phone', 'product',
+            'timestamp', 'closed', 'buyer',
+            't_notive', 'status'
+        ]
+
+    def get_status(self, instance):
+        return instance.get_trx_status().status
 
 class TransactionPostSerializer(ModelSerializer):
     class Meta:
         model = Transaction
         fields = [
-            'id',
             'trx_code', 'phone', 'product',
             'timestamp', 'closed'
         ]
@@ -78,3 +94,10 @@ class TransactionDetailSerializer(ModelSerializer):
 
     def get_detail_res(self, instance):
         return instance.get_detail_response()
+
+class TeleTrxStatusSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = [
+            't_notive'
+        ]

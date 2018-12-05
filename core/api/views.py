@@ -9,13 +9,14 @@ import pytz
 from datetime import datetime
 
 
-from core.models import User, SiteMaster, MessagePost
+from core.models import User, SiteMaster, MessagePost, Telegram
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 
 from .serializers import (
     TokenSerializer, TelegramSerilizer, SiteSerializer, 
-    MessagePostSerializer, MessageUpdateSerializer
+    MessagePostSerializer, MessageUpdateSerializer,
+    TeleforUserSerializer
 )
 
 
@@ -69,3 +70,11 @@ class MessageApiUpdateView(RetrieveUpdateAPIView):
     # permission_classes = [
     #     IsAuthenticated
     # ]
+
+
+class TeleUserRetriaveApiView(RetrieveAPIView):
+    queryset = Telegram.objects.all()
+    serializer_class = TeleforUserSerializer
+    
+    lookup_url_kwarg = 'telegram'
+    lookup_field = 'telegram'

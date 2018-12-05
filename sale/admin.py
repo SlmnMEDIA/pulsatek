@@ -9,6 +9,10 @@ from .models import (
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
     list_display = ['trx_obj', 'type_income', 'debit', 'credit', 'balance', 'ref', 'user', 'timestamp']
+    list_filter = ['type_income']
+    search_fields = [
+        'user__email'
+    ]
 
 
 @admin.register(Payment)
