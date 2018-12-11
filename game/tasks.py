@@ -42,7 +42,10 @@ def game_response_celery(id, payload):
 
 def bulk_update():
     res_obj = ResponseTrx.objects.filter(
-        trx__closed=False
+        trx__closed=False,
+        ref2__isnull=False
+    ).exclude(
+        ref2__exact=''
     ).latest('timestamp')
 
     h_time = timezone.localtime(res_obj.timestamp) + datetime.timedelta(minutes=1)
