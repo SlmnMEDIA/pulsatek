@@ -164,6 +164,12 @@ class ResponseTrx(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = [
+            '-timestamp'
+        ]
+
+
 
 class SourceData(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)

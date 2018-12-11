@@ -4,6 +4,9 @@ from django.conf import settings
 import requests, json
 from .models import StatusTransaction, ResponseTrx
 
+import datetime
+from django.utils import timezone
+
 @shared_task
 def game_response_celery(id, payload):
     rjson = dict()
@@ -38,9 +41,14 @@ def game_response_celery(id, payload):
     
 
 def bulk_update():
-    res_objs = ResponseTrx.objects.filter(
-        trx__closed=False, ref2__isnull=False
-    ).exclude(ref2__exact='')
+    res_obj = ResponseTrx.objects.filter(
+        trx__closed=False
+    ).latest('timestamp')
+
+    h_time = timezone.localtime(res_obj.timestamp) + datetime.timedelta(minutes=1)
+    l_time = h_time + datetime.timedelta(days=-1)
+
+    rson = dict()
     
     payload = {
         'method': 'rajabiller.datatransaksi',
@@ -48,55 +56,101 @@ def bulk_update():
         'uid': settings.RAJA_UID, 
         'id_produk': '', 
         'idpel': '', 
-        'tgl1': '', 
+        'tgl1': l_time.strftime('%Y%m%d%H%M%S'), 
         'id_transaksi': '', 
-        'tgl2': '', 
+        'tgl2': h_time.strftime('%Y%m%d%H%M%S'), 
         'limit': '', 
     }
+
     urls = settings.RAJA_URLS
-    for res in res_objs:
-        if res.status == '00' and res.sn != '' and res.sn is not None:
-            StatusTransaction.objects.create(
-                trx = res.trx, status='SS'
+    for url in urls:
+        try :
+            r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=7)
+            if r.status_code == requests.codes.ok:
+                rson = r.json()
+                break
+
+            r.raise_for_status()
+        except:
+            continue
+
+    data = rson.get('RESULT_TRANSAKSI', [])
+    for i in data:
+        try :
+            code, tgl, prod, prod_name, pel, statcode, stat, price, sn = i.split('#')
+            res_trxs = ResponseTrx.objects.filter(ref2=code)
+            res_trxs.update(
+                waktu = tgl,
+                no_hp = pel,
+                sn = sn,
+                saldo_terpotong = int(price),
+                status = statcode,
+                ket = stat,
             )
-        else :
-            payload['tgl1'] = res.waktu
-            payload['tgl2'] = res.waktu
-            payload['id_transaksi'] = res.ref2
+
+            res = res_trxs.get()
+            if res.status=='00':
+                if res.sn != '' and res.sn is not None:
+                    StatusTransaction.objects.create(
+                        trx = res.trx, status='SS'
+                    )
+            elif res.status in ['68','']:
+                pass
+            else :
+                StatusTransaction.objects.create(
+                    trx = res.trx, status='FA'
+                )
+        except:
+            pass
+
+    
 
 
-            for url in urls:                
-                try :
-                    r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=5)
-                    if r.status_code == requests.codes.ok:
-                        try :
-                            rjson = r.json()
-                            if rjson['STATUS'] == '00':
-                                result = rjson['RESULT_TRANSAKSI'][0]
-                                code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
-                                res.sn = sn
-                                res.saldo_terpotong = int(price)
-                                res.status = statcode
-                                res.ket = stat
-                                res.save()
-                                if res.status is not None and res.status != '':
-                                    if res.status=='00':
-                                        if res.sn != '' and res.sn is not None:
-                                            StatusTransaction.objects.create(
-                                                trx = res.trx, status='SS'
-                                            )
-                                    elif res.status=='68':
-                                        pass
-                                    else :
-                                        StatusTransaction.objects.create(
-                                            trx = res.trx, status='FA'
-                                        )
-                        except:
-                            pass
 
-                        finally:
-                            break
 
-                    r.raise_for_status()
-                except:
-                    continue
+    # for res in res_objs:
+    #     if res.status == '00' and res.sn != '' and res.sn is not None:
+    #         StatusTransaction.objects.create(
+    #             trx = res.trx, status='SS'
+    #         )
+    #     else :
+    #         payload['tgl1'] = res.waktu
+    #         payload['tgl2'] = res.waktu
+    #         payload['id_transaksi'] = res.ref2
+
+
+    #         for url in urls:                
+    #             try :
+    #                 r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=5)
+    #                 if r.status_code == requests.codes.ok:
+    #                     try :
+    #                         rjson = r.json()
+    #                         if rjson['STATUS'] == '00':
+    #                             result = rjson['RESULT_TRANSAKSI'][0]
+    #                             code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
+    #                             res.sn = sn
+    #                             res.saldo_terpotong = int(price)
+    #                             res.status = statcode
+    #                             res.ket = stat
+    #                             res.save()
+    #                             if res.status is not None and res.status != '':
+    #                                 if res.status=='00':
+    #                                     if res.sn != '' and res.sn is not None:
+    #                                         StatusTransaction.objects.create(
+    #                                             trx = res.trx, status='SS'
+    #                                         )
+    #                                 elif res.status=='68':
+    #                                     pass
+    #                                 else :
+    #                                     StatusTransaction.objects.create(
+    #                                         trx = res.trx, status='FA'
+    #                                     )
+    #                     except:
+    #                         pass
+
+    #                     finally:
+    #                         break
+
+    #                 r.raise_for_status()
+    #             except:
+    #                 continue

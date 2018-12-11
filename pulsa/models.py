@@ -196,3 +196,8 @@ class ResponseTrx(models.Model):
     sisa_saldo = models.PositiveIntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = [
+            '-timestamp'
+        ]
