@@ -5,7 +5,7 @@ from .resources import ProductResource, OperatorResource, ServerResource
 # Register your models here.
 from .models import (
     Operator, Product, Server, StatusTransaction, Transaction,
-    ResponseTrx,
+    ResponseTrx, SourceData
 )
 
 from .forms import ProductForm, ServerForm, OperatorForm
@@ -57,6 +57,9 @@ class TransactionAdmin(admin.ModelAdmin):
         'buyer', 'get_trx_status', 'timestamp'
     ]
 
+@admin.register(SourceData)
+class SourceDataAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(StatusTransaction)
 admin.site.register(ResponseTrx)

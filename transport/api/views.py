@@ -7,7 +7,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from datetime import date, datetime
+from django.db.models import F, Q, Sum
+
+from django.utils import timezone
+import datetime
 
 from transport.models import Operator, Product, Transaction
 from .serializers import (
@@ -101,7 +104,8 @@ class TransactionCreateView(CreateModelMixin, GenericAPIView):
             status_obj = StatusTransaction.objects.get(code='10')
             return Response(StatusTrx(status_obj).data)
 
-        trx_objs = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date=date.today(), record__success=True, record__debit=0)
+        now = timezone.now()
+        trx_objs = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date=now.date(), record__success=True, record__debit=0)
         if trx_objs.exists():
             status_obj = StatusTransaction.objects.get(code='20')
             return Response(StatusTrx(status_obj).data)
@@ -143,7 +147,9 @@ class TransactionCreatePost(APIView):
 
         request.data['product'] = product_obj.id
 
-        trx = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date=date.today(), record__success=True, record__debit=0)
+        now = timezone.now()
+
+        trx = Transaction.objects.filter(product=product_obj, phone=request.data['phone'], timestamp__date= now.date(), record__success=True, record__debit=0)
         if trx.exists():
             status_obj = StatusTransaction.objects.get(code='20')
             output['status'] = StatusTrx(status_obj).data
@@ -181,3 +187,15 @@ class TransactionListApiView(ListAPIView):
 class TeleTrxStatusRetryView(RetrieveUpdateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TeleTrxStatusSerializer
+
+
+class TransactionGoProcess(APIView):
+    def get(self, request, format=None):
+        now = timezone.now()
+        trx_objs = Transaction.objects.filter(
+            (Q(timestamp__lt = now + datetime.timedelta(seconds=-30)) | Q(loading = False)) &
+            Q(procesing = False)
+        )
+
+        serializer_ob = TransactionSerializer(trx_objs, many=True)
+        return Response(serializer_ob.data)

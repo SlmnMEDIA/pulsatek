@@ -11,13 +11,16 @@ def transport_response_celery(id, payload):
 
     urls = settings.RAJA_URLS
 
-    try:
-        r = requests.post(urls[0], data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False)
-        if r.status_code == requests.codes.ok :
-            rjson = r.json()
-        r.raise_for_status()
-    except :
-        pass
+    for url in urls:
+        try:
+            r = requests.post(url, data=json.dumps(payload), headers={'Content-Type':'application/json'}, verify=False, timeout=5)
+            if r.status_code == requests.codes.ok :
+                rjson = r.json()
+                break
+
+            r.raise_for_status()
+        except :
+            continue
 
     responsetrx_obj.kode_produk = rjson.get('KODE_PRODUK', '')
     responsetrx_obj.waktu = rjson.get('WAKTU', '')
@@ -31,11 +34,16 @@ def transport_response_celery(id, payload):
     responsetrx_obj.sisa_saldo = int(rjson.get('SISA_SALDO', 0))
     responsetrx_obj.save()
 
+    return '[+] Processing transport trx {}'.format(responsetrx_obj.trx.trx_code)
+
+
+
 @shared_task
 def bulk_update():
     res_objs = ResponseTrx.objects.filter(
         trx__closed=False
     )
+    
     payload = {
         'method': 'rajabiller.datatransaksi',
         'pin': settings.RAJA_KEY, 
@@ -47,7 +55,7 @@ def bulk_update():
         'tgl2': '', 
         'limit': '', 
     }
-    url = settings.RAJA_URLS
+    urls = settings.RAJA_URLS
     for res in res_objs:
         if res.status == '00' and res.sn != '' and res.sn is not None:
             StatusTransaction.objects.create(
@@ -59,31 +67,41 @@ def bulk_update():
                 payload['tgl2'] = res.waktu
                 payload['id_transaksi'] = res.ref2
 
-                try :
-                    r = requests.post(url[0], data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'})
-                    if r.status_code == requests.codes.ok:
-                        rjson = r.json()
-                        if rjson['STATUS'] == '00':
-                            result = rjson['RESULT_TRANSAKSI'][0]
-                            code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
-                            res.sn = sn
-                            res.price = int(price)
-                            res.status = statcode
-                            res.ket = stat
-                            res.save()
-                            if res.status is not None and res.status != '':
-                                if res.status=='00':
-                                    if res.sn != '' and res.sn is not None:
-                                        StatusTransaction.objects.create(
-                                            trx = res.trx, status='SS'
-                                        )
-                                elif res.status=='68':
-                                    pass
-                                else :
-                                    StatusTransaction.objects.create(
-                                        trx = res.trx, status='FA'
-                                    )
-                except:
-                    pass
 
-    return '{} transaction object has updated!'.format(res_objs.count())
+                for url in urls:                
+                    try :
+                        r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=7)
+                        if r.status_code == requests.codes.ok:
+                            try :
+                                rjson = r.json()
+                                if rjson['STATUS'] == '00':
+                                    result = rjson['RESULT_TRANSAKSI'][0]
+                                    code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
+                                    res.sn = sn
+                                    res.saldo_terpotong = int(price)
+                                    res.status = statcode
+                                    res.ket = stat
+                                    res.save()
+                                    if res.status is not None and res.status != '':
+                                        if res.status=='00':
+                                            if res.sn != '' and res.sn is not None:
+                                                StatusTransaction.objects.create(
+                                                    trx = res.trx, status='SS'
+                                                )
+                                        elif res.status=='68':
+                                            pass
+                                        else :
+                                            StatusTransaction.objects.create(
+                                                trx = res.trx, status='FA'
+                                            )
+                            except:
+                                pass
+                                
+                            finally:
+                                break
+
+                        r.raise_for_status()
+                    except:
+                        continue
+
+    return '[?] {} transaction transport has updated!'.format(res_objs.count())

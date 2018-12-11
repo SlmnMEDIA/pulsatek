@@ -92,6 +92,8 @@ class Transaction(models.Model):
     record = models.OneToOneField(Sale, on_delete=models.SET_NULL, null=True, blank=True, related_name='saletransport')
     closed = models.BooleanField(default=False)
     t_notive = models.BooleanField(default=False)
+    loading = models.BooleanField(default=True)
+    procesing = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 
@@ -162,3 +164,17 @@ class ResponseTrx(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 
+
+class SourceData(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+    trx = models.OneToOneField(Transaction, on_delete=models.CASCADE)
+    sn = models.CharField(max_length=100)
+    price = models.PositiveIntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return self.sn
