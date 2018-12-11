@@ -64,5 +64,5 @@ def bulk_updateTransaction(request):
     )
     
     if res_objs.exists():
-        bulk_update.delay()
+        bulk_update()
     return JsonResponse({'items': res_objs.count()})

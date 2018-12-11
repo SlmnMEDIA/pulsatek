@@ -37,11 +37,10 @@ def game_response_celery(id, payload):
     return '[+] Processing game trx {}'.format(responsetrx_obj.trx.trx_code)
     
 
-@shared_task
 def bulk_update():
     res_objs = ResponseTrx.objects.filter(
-        trx__closed=False
-    )
+        trx__closed=False, ref2__isnull=False
+    ).exclude(ref2__exact='')
     
     payload = {
         'method': 'rajabiller.datatransaksi',
@@ -61,46 +60,43 @@ def bulk_update():
                 trx = res.trx, status='SS'
             )
         else :
-            if res.ref1 is not None and res.ref1 !='':
-                payload['tgl1'] = res.waktu
-                payload['tgl2'] = res.waktu
-                payload['id_transaksi'] = res.ref2
+            payload['tgl1'] = res.waktu
+            payload['tgl2'] = res.waktu
+            payload['id_transaksi'] = res.ref2
 
 
-                for url in urls:                
-                    try :
-                        r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=5)
-                        if r.status_code == requests.codes.ok:
-                            try :
-                                rjson = r.json()
-                                if rjson['STATUS'] == '00':
-                                    result = rjson['RESULT_TRANSAKSI'][0]
-                                    code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
-                                    res.sn = sn
-                                    res.saldo_terpotong = int(price)
-                                    res.status = statcode
-                                    res.ket = stat
-                                    res.save()
-                                    if res.status is not None and res.status != '':
-                                        if res.status=='00':
-                                            if res.sn != '' and res.sn is not None:
-                                                StatusTransaction.objects.create(
-                                                    trx = res.trx, status='SS'
-                                                )
-                                        elif res.status=='68':
-                                            pass
-                                        else :
+            for url in urls:                
+                try :
+                    r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=5)
+                    if r.status_code == requests.codes.ok:
+                        try :
+                            rjson = r.json()
+                            if rjson['STATUS'] == '00':
+                                result = rjson['RESULT_TRANSAKSI'][0]
+                                code, tgl, prod, prod_name, pel, statcode, stat, price, sn = result.split('#')
+                                res.sn = sn
+                                res.saldo_terpotong = int(price)
+                                res.status = statcode
+                                res.ket = stat
+                                res.save()
+                                if res.status is not None and res.status != '':
+                                    if res.status=='00':
+                                        if res.sn != '' and res.sn is not None:
                                             StatusTransaction.objects.create(
-                                                trx = res.trx, status='FA'
+                                                trx = res.trx, status='SS'
                                             )
-                            except:
-                                pass
+                                    elif res.status=='68':
+                                        pass
+                                    else :
+                                        StatusTransaction.objects.create(
+                                            trx = res.trx, status='FA'
+                                        )
+                        except:
+                            pass
 
-                            finally:
-                                break
+                        finally:
+                            break
 
-                        r.raise_for_status()
-                    except:
-                        continue
-
-    return '[?] {} transaction game has updated!'.format(res_objs.count())
+                    r.raise_for_status()
+                except:
+                    continue

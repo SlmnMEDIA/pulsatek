@@ -11,7 +11,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Sale, Cash, Payment
 from pulsa.models import Product as pulsaProduct
 from .forms import AddCashForm
-from .tasks import bulk_update_profit
 from core.decorators import user_is_agen_or_staff, user_is_staff_only
 
 # DATASET ALL SALE MONTH
@@ -322,8 +321,9 @@ def bulkProfitView(request):
         closed = False,
         saleprofit = 0,
     )
-    if sale_objs.exists():
-        bulk_update_profit.delay()
+    if sale_obj in sale_objs:
+        sale_obj.saleprofit = sale_obj.profit()
+        sale_obj.save(update_fields=['saleprofit'])
 
     return JsonResponse(data)
 
