@@ -41,70 +41,71 @@ def game_response_celery(id, payload):
     
 
 def bulk_update():
-    res_obj = ResponseTrx.objects.filter(
+    res_objs = ResponseTrx.objects.filter(
         trx__closed=False,
         ref2__isnull=False
     ).exclude(
         ref2__exact=''
-    ).latest('timestamp')
-
-    h_time = timezone.localtime(res_obj.timestamp) + datetime.timedelta(minutes=1)
-    l_time = h_time + datetime.timedelta(days=-1)
-
-    rson = dict()
-    
-    payload = {
-        'method': 'rajabiller.datatransaksi',
-        'pin': settings.RAJA_KEY, 
-        'uid': settings.RAJA_UID, 
-        'id_produk': '', 
-        'idpel': '', 
-        'tgl1': l_time.strftime('%Y%m%d%H%M%S'), 
-        'id_transaksi': '', 
-        'tgl2': h_time.strftime('%Y%m%d%H%M%S'), 
-        'limit': '', 
-    }
+    )
 
     urls = settings.RAJA_URLS
-    for url in urls:
-        try :
-            r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=7)
-            if r.status_code == requests.codes.ok:
-                rson = r.json()
-                break
+    for res_obj in res_objs:
+        h_time = timezone.localtime(res_obj.timestamp) + datetime.timedelta(minutes=1)
+        l_time = h_time + datetime.timedelta(days=-1)
 
-            r.raise_for_status()
-        except:
-            continue
+        rson = dict()
+        
+        payload = {
+            'method': 'rajabiller.datatransaksi',
+            'pin': settings.RAJA_KEY, 
+            'uid': settings.RAJA_UID, 
+            'id_produk': '', 
+            'idpel': '', 
+            'tgl1': l_time.strftime('%Y%m%d%H%M%S'), 
+            'id_transaksi': '', 
+            'tgl2': h_time.strftime('%Y%m%d%H%M%S'), 
+            'limit': '', 
+        }
+        for url in urls:
+            try :
+                r = requests.post(url, data=json.dumps(payload), verify=False, headers={'Content-Type':'application/json'}, timeout=7)
+                if r.status_code == requests.codes.ok:
+                    rson = r.json()
+                    break
 
-    data = rson.get('RESULT_TRANSAKSI', [])
-    for i in data:
-        try :
-            code, tgl, prod, prod_name, pel, statcode, stat, price, sn = i.split('#')
-            res_trxs = ResponseTrx.objects.filter(ref2=code)
-            res_trxs.update(
-                waktu = tgl,
-                no_hp = pel,
-                sn = sn,
-                saldo_terpotong = int(price),
-                status = statcode,
-                ket = stat,
-            )
+                r.raise_for_status()
+            except:
+                continue
 
-            res = res_trxs.get()
-            if res.status=='00':
-                if res.sn != '' and res.sn is not None:
-                    StatusTransaction.objects.create(
-                        trx = res.trx, status='SS'
+        data = rson.get('RESULT_TRANSAKSI', [])
+        for i in data:
+            try :
+                code, tgl, prod, prod_name, pel, statcode, stat, price, sn = i.split('#')
+                res_trxs = ResponseTrx.objects.filter(ref2=code, trx__closed=False)
+                if res_trxs.exists():
+                    res_trxs.update(
+                        waktu = tgl,
+                        no_hp = pel,
+                        sn = sn,
+                        saldo_terpotong = int(price),
+                        status = statcode,
+                        ket = stat,
                     )
-            elif res.status in ['68','']:
+
+                    res = res_trxs.get()
+                    if res.status=='00':
+                        if res.sn != '' and res.sn is not None:
+                            StatusTransaction.objects.create(
+                                trx = res.trx, status='SS'
+                            )
+                    elif res.status in ['68','']:
+                        pass
+                    else :
+                        StatusTransaction.objects.create(
+                            trx = res.trx, status='FA'
+                        )
+            except:
                 pass
-            else :
-                StatusTransaction.objects.create(
-                    trx = res.trx, status='FA'
-                )
-        except:
-            pass
 
     
 

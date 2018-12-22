@@ -24,7 +24,13 @@ from rest_framework.authtoken import views
 from core.views import signupViews
 from page.views import home as home_view
 
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+
+
 urlpatterns = [
+    path('api-jwt-token-auth/', obtain_jwt_token),
+    path('api-jwt-token-refresh/', refresh_jwt_token),
+    path('api-jwt-token-verify/', verify_jwt_token),
     path('v2/', include('django.contrib.auth.urls')),
     path('', home_view, name='home'),
     path('page/', include('page.urls')),
