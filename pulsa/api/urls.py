@@ -16,4 +16,6 @@ urlpatterns = [
     path('topup/', views.TransactionCreatePost.as_view(), name='topup'),
     path('trx/', views.TransactionListApiView.as_view(), name='transaction'),
     path('trx/tele/<int:pk>/', views.TeleTrxStatusRetryView.as_view(), name='trx_tele'),
+    path('topup_v3/', views.TopupApiView.as_view(), name='topup3'),
+    path('dev/topup/', views.TopupDevApiView.as_view(), name='dev_topup'),
 ]

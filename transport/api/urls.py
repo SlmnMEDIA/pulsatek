@@ -16,4 +16,5 @@ urlpatterns = [
     path('trx/', views.TransactionListApiView.as_view(), name='transaction'),
     path('trx/tele/<int:pk>/', views.TeleTrxStatusRetryView.as_view(), name='trx_tele'),
     path('trx/goon/', views.TransactionGoProcess.as_view(), name='trx_goon'),
+    path('topup_v3/', views.TopupApiView.as_view(), name='topup3'),
 ]

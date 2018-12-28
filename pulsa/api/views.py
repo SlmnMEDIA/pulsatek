@@ -20,6 +20,8 @@ from .serializers import (
     PrefixNumberSerializer,
     TransactionResposneSerializer,
     TeleTrxStatusSerializer,
+    TransactionNewSerializer,
+    TransactionDevSerializer,
 )
 
 from .paginators import StandardResultsSetPagination
@@ -203,3 +205,39 @@ class TransactionListApiView(ListAPIView):
 class TeleTrxStatusRetryView(RetrieveUpdateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TeleTrxStatusSerializer
+
+
+class TopupApiView(CreateAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionNewSerializer
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['buyer'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TopupDevApiView(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['buyer'] = request.user.id
+        serializer = TransactionDevSerializer(data=data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
